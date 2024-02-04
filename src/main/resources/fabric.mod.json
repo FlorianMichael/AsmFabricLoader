@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "asmfabricloader",
   "version": "${version}",
-  "name": "Asm Fabric Loader",
+  "name": "AsmFabricLoader",
   "description": "A series of cursed Fabric hacks and utilities which break everything.",
   "authors": [
     "FlorianMichael/EnZaXD"

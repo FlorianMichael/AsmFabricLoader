@@ -31,7 +31,7 @@ import java.util.List;
 
 public class AsmFabricLoader {
 
-    private static AsmFabricLoader launcher;
+    private static AsmFabricLoader loader;
 
     private final ClassTransform classTransform;
     private final Unmixer unmixer;
@@ -39,11 +39,11 @@ public class AsmFabricLoader {
     private final MappingsResolver mappingsResolver;
 
     public static void install() {
-        if (launcher != null) {
+        if (loader != null) {
             throw new IllegalStateException("AsmFabricLoader is already installed");
         }
         AFLConstants.LOGGER.error("no good? no, this man is definitely up to evil.");
-        launcher = new AsmFabricLoader();
+        loader = new AsmFabricLoader();
     }
 
     public AsmFabricLoader() {
@@ -93,8 +93,8 @@ public class AsmFabricLoader {
         return mappingsResolver;
     }
 
-    public static AsmFabricLoader getLauncher() {
-        return launcher;
+    public static AsmFabricLoader getLoader() {
+        return loader;
     }
 
 }

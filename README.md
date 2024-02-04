@@ -84,7 +84,7 @@ FabricLoader 0.15.0+ removed the `tiny-mappings-parser` library and therefore mo
 re-adds the mappings API and allows you to use it in your mods.
 
 ```java
-final MappingsResolver mappings = AsmFabricLoader.getLauncher().getMappingsResolver();
+final MappingsResolver mappings = AsmFabricLoader.getLoader().getMappingsResolver();
 
 if (mappings.areMappingsLoaded()) { // This will be true in production environments
     // Now you get the mapping path you want to translate to, for example:
@@ -102,7 +102,7 @@ AsmFabricLoader adds a new API which allows you to unload Mixin classes meaning 
 useful if another mod is breaking your Mixins or if you want to unload Mixins after they have been applied.
 
 ```java
-final Unmixer unmixer = AsmFabricLoader.getLauncher().getUnmixer();
+final Unmixer unmixer = AsmFabricLoader.getLoader().getUnmixer();
 
 // This method accepts the mixin classes of all loaded mods including the Fabric internals
 unmixer.unloadMixinClass("net/fabricmc/api/mixin/v1/MixinEnvironment");

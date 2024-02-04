@@ -37,7 +37,7 @@ public class MixinTitleScreen extends Screen {
 
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)I"))
     public int drawAFLIndicator(DrawContext instance, TextRenderer textRenderer, String text, int x, int y, int color, Operation<Integer> original) {
-        final int modsSize = AsmFabricLoader.getLauncher().getAflMods().size();
+        final int modsSize = AsmFabricLoader.getLoader().getAflMods().size();
         instance.drawTextWithShadow(textRenderer, "AsmFabricLoader: " + modsSize + " mod" + (modsSize != 1 ? "s" : "") + " loaded", x, y - 10, color);
 
         return original.call(instance, textRenderer, text, x, y, color);

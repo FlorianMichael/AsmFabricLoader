@@ -47,7 +47,6 @@ public class MixinTransformerBootstrap {
                 AFLConstants.LOGGER.error("Unable to load InjectionCallback class", e);
             }
         }
-        System.out.println("asd");
 
         TRANSFORMER = new TransformerManager(classProvider, MixinClassLoaderConstants.MAPPINGS);
         for (String transformer : MixinClassLoaderConstants.MIXING_TRANSFORMERS) {
