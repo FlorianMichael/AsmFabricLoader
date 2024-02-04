@@ -1,0 +1,9 @@
+{
+  "package": "de.florianmichael.asmfabricloader.hook.transformer",
+  "java": [
+    "MixinInfoTransformer",
+    "BytecodeTransformer"
+  ],
+  "mixins": [
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "asmfabricloader",
+  "version": "${version}",
+  "name": "Asm Fabric Loader",
+  "description": "A series of cursed Fabric hacks and utilities which break everything.",
+  "authors": [
+    "FlorianMichael/EnZaXD"
+  ],
+  "contact": {
+    "homepage": "https://github.com/FlorianMichael",
+    "sources": "https://github.com/FlorianMichael/AsmFabricLoader"
+  },
+  "license": "Apache-2.0",
+  "icon": "assets/asmfabricloader/icon.png",
+  "environment": "*",
+  "mixins": [
+    "asmfabricloader.mixins.json"
+  ],
+  "custom": {
+    "afl:classtransform": "asmfabricloader.classtransform.json"
+  },
+  "languageAdapters": {
+    "afl": "de.florianmichael.asmfabricloader.loader.bootstrap.AFLLanguageAdapter"
+  },
+  "depends": {
+    "fabricloader": ">=0.14.22",
+    "minecraft": "~1.20.4",
+    "java": ">=17"
+  }
+}
