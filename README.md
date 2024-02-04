@@ -84,16 +84,16 @@ FabricLoader 0.15.0+ removed the `tiny-mappings-parser` library and therefore mo
 re-adds the mappings API and allows you to use it in your mods.
 
 ```java
-final MappingsResolver mappings=AsmFabricLoader.getLauncher().getMappingsResolver();
+final MappingsResolver mappings = AsmFabricLoader.getLauncher().getMappingsResolver();
 
-        if(mappings.areMappingsLoaded()){ // This will be true in production environments
-// Now you get the mapping path you want to translate to, for example:
-final String className=mappings.named().getClassName("net/minecraft/class_7833");
-// this field should now be net/minecraft/util/math/RotationAxis
+if (mappings.areMappingsLoaded()) { // This will be true in production environments
+    // Now you get the mapping path you want to translate to, for example:
+    final String className=mappings.named().getClassName("net/minecraft/class_7833");
+    // this field should now be net/minecraft/util/math/RotationAxis
 
-// You can also use the getClassDef method to get a ClassDef object from the tiny-mappings-parser library
-final ClassDef classDef=mappings.named().getClassDef("net/minecraft/class_7833");
-        }
+    // You can also use the getClassDef method to get a ClassDef object from the tiny-mappings-parser library
+    final ClassDef classDef = mappings.named().getClassDef("net/minecraft/class_7833");
+}
 ```
 
 ### Unmixer
@@ -102,10 +102,10 @@ AsmFabricLoader adds a new API which allows you to unload Mixin classes meaning 
 useful if another mod is breaking your Mixins or if you want to unload Mixins after they have been applied.
 
 ```java
-final Unmixer unmixer=AsmFabricLoader.getLauncher().getUnmixer();
+final Unmixer unmixer = AsmFabricLoader.getLauncher().getUnmixer();
 
-// This method accepts the mixin classes of all loaded mods including the Fabric internals 
-        unmixer.unloadMixinClass("net/fabricmc/api/mixin/v1/MixinEnvironment");
+// This method accepts the mixin classes of all loaded mods including the Fabric internals
+unmixer.unloadMixinClass("net/fabricmc/api/mixin/v1/MixinEnvironment");
 ```
 
 You can also use the Unmixer via the `fabric.mod.json` file:
@@ -185,7 +185,6 @@ applied to the game code, this is basically a replacement for [MixinSquared](htt
 #### Example transformer
 
 ```java
-
 @CTransformer(String.class)
 public class Test {
 
