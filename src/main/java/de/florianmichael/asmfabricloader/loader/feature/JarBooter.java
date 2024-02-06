@@ -36,12 +36,12 @@ public class JarBooter {
                 for (CustomValue customValue : value.getAsArray()) {
                     final File target = new File(customValue.getAsString());
 
-                    replaceJar0(target);
+                    replaceJar(target);
                 }
             } else if (value.getType() == CustomValue.CvType.STRING) {
                 final File target = new File(value.getAsString());
 
-                replaceJar0(target);
+                replaceJar(target);
             }
         });
     }
@@ -51,9 +51,9 @@ public class JarBooter {
      *
      * @param file The file to iterate over
      */
-    public void replaceJar0(final File file) {
+    public void replaceJar(final File file) {
         try {
-            replaceJar(file);
+            replaceJar0(file);
         } catch (MalformedURLException e) {
             AFLConstants.LOGGER.error("Failed to load jar file " + file.getName() + " to the front of the classpath", e);
         }
@@ -65,7 +65,7 @@ public class JarBooter {
      * @param file The file to iterate over
      * @throws MalformedURLException If the file is not a valid URL
      */
-    public void replaceJar(final File file) throws MalformedURLException {
+    public void replaceJar0(final File file) throws MalformedURLException {
         for (File listFile : file.listFiles()) {
             final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
             try {
@@ -78,7 +78,7 @@ public class JarBooter {
                         AFLConstants.LOGGER.info("Loaded jar file " + listFile.getName() + " to the front of the classpath");
                     }
                 } else if (listFile.isDirectory()) {
-                    replaceJar(listFile);
+                    replaceJar0(listFile);
                 }
             } finally {
                 Thread.currentThread().setContextClassLoader(oldLoader);
