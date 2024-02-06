@@ -85,7 +85,7 @@ public class MappingsResolver {
     }
 
     /**
-     * @return If we are in a development environment (true) or in a production environment (false)
+     * @return Whether the mappings are loaded or not (Usually only false in dev environment, except if {@link #loadMappings()} was called manually)
      */
     public boolean areMappingsLoaded() {
         return intermediaryToNamed != null && namedToIntermediary != null;
