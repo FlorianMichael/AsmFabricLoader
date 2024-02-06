@@ -41,20 +41,33 @@ public class MappingsResolver {
     public MappingsResolver() {
         try {
             if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
-                final InputStream mappingFile = MappingsResolver.class.getResourceAsStream("/mappings/mappings.tiny");
-                if (mappingFile == null) {
-                    throw new RuntimeException("Unable to load mappings!");
-                }
-                final TinyTree mappings = TinyMappingFactory.load(new BufferedReader(new InputStreamReader(mappingFile, StandardCharsets.UTF_8)));
-
-                namedToIntermediary = new MapperBase(mappings, "named", "intermediary");
-                intermediaryToNamed = new MapperBase(mappings, "intermediary", "named");
+                loadMappings();
             } else if (AFLConstants.isDebugEnabled()) {
                 AFLConstants.LOGGER.warn("Skipping mapping loading in development environment!");
             }
         } catch (IOException e) {
             AFLConstants.LOGGER.error("Unable to load mappings!", e);
         }
+    }
+
+    /**
+     * Loads the mappings from the mappings.tiny file
+     *
+     * @throws IOException           If the file could not be read
+     * @throws IllegalStateException If the mappings are already loaded
+     */
+    public void loadMappings() throws IOException, IllegalStateException {
+        if (namedToIntermediary != null && intermediaryToNamed != null) {
+            throw new IllegalStateException("Mappings are already loaded!");
+        }
+        final InputStream mappingFile = MappingsResolver.class.getResourceAsStream("/mappings/mappings.tiny");
+        if (mappingFile == null) {
+            throw new RuntimeException("Unable to load mappings!");
+        }
+        final TinyTree mappings = TinyMappingFactory.load(new BufferedReader(new InputStreamReader(mappingFile, StandardCharsets.UTF_8)));
+
+        namedToIntermediary = new MapperBase(mappings, "named", "intermediary");
+        intermediaryToNamed = new MapperBase(mappings, "intermediary", "named");
     }
 
     /**
