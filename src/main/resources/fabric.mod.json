@@ -18,7 +18,10 @@
     "asmfabricloader.mixins.json"
   ],
   "custom": {
-    "afl:classtransform": "asmfabricloader.classtransform.json"
+    "afl:classtransform": "asmfabricloader.classtransform.json",
+    "modmenu": {
+      "badges": [ "library" ]
+    }
   },
   "languageAdapters": {
     "afl": "de.florianmichael.asmfabricloader.loader.bootstrap.AFLLanguageAdapter"

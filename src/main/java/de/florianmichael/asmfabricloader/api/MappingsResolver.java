@@ -54,18 +54,17 @@ public class MappingsResolver {
      * Loads the mappings from the mappings.tiny file
      *
      * @throws IOException           If the file could not be read
-     * @throws IllegalStateException If the mappings are already loaded
      */
     public void loadMappings() throws IOException, IllegalStateException {
         if (namedToIntermediary != null && intermediaryToNamed != null) {
-            throw new IllegalStateException("Mappings are already loaded!");
+            return;
         }
         final InputStream mappingFile = MappingsResolver.class.getResourceAsStream("/mappings/mappings.tiny");
         if (mappingFile == null) {
             throw new RuntimeException("Unable to load mappings!");
         }
-        final TinyTree mappings = TinyMappingFactory.load(new BufferedReader(new InputStreamReader(mappingFile, StandardCharsets.UTF_8)));
 
+        final TinyTree mappings = TinyMappingFactory.load(new BufferedReader(new InputStreamReader(mappingFile, StandardCharsets.UTF_8)));
         namedToIntermediary = new MapperBase(mappings, "named", "intermediary");
         intermediaryToNamed = new MapperBase(mappings, "intermediary", "named");
     }
