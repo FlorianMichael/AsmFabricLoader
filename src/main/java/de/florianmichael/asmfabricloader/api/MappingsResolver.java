@@ -59,10 +59,8 @@ public class MappingsResolver {
         if (namedToIntermediary != null && intermediaryToNamed != null) {
             return;
         }
-        final InputStream mappingFile = MappingsResolver.class.getResourceAsStream("/mappings/mappings.tiny");
-        if (mappingFile == null) {
-            throw new RuntimeException("Unable to load mappings!");
-        }
+        final InputStream mappingFile = AFLConstants.getMappingsFile();
+        if (mappingFile == null) throw new RuntimeException("Unable to load mappings!");
 
         final TinyTree mappings = TinyMappingFactory.load(new BufferedReader(new InputStreamReader(mappingFile, StandardCharsets.UTF_8)));
         namedToIntermediary = new MapperBase(mappings, "named", "intermediary");

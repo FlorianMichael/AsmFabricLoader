@@ -1,149 +1,150 @@
 plugins {
-	id "maven-publish"
-	id "signing"
-	id "fabric-loom" version "1.5-SNAPSHOT"
+    id "maven-publish"
+    id "signing"
+    id "fabric-loom" version "1.5-SNAPSHOT"
 }
 
 base {
-	version = project.maven_version
-	group = project.maven_group
-	archivesName = project.maven_name
+    version = project.maven_version
+    group = project.maven_group
+    archivesName = project.maven_name
 }
 
 configurations {
-	jij // jar in jar configuration
-	jis // jar in jar sources configuration
+    jij // jar in jar configuration
+    jis // jar in jar sources configuration
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 
-	maven {
-		name = "Lenni0451"
-		url = "https://maven.lenni0451.net/everything"
-	}
+    maven {
+        name = "Lenni0451"
+        url = "https://maven.lenni0451.net/everything"
+    }
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	jis mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    jis mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	jij "net.fabricmc:tiny-mappings-parser:${project.tiny_mappings_parser_version}"
-	jij "net.lenni0451:Reflect:${project.reflect_version}"
-	jij ("net.lenni0451.classtransform:core:${project.classtransform_version}") {
-		exclude module: "asm"
-		exclude module: "asm-commons"
-		exclude module: "asm-tree"
-	}
+    jij "net.fabricmc:tiny-mappings-parser:${project.tiny_mappings_parser_version}"
+    jij "net.lenni0451:Reflect:${project.reflect_version}"
+    jij("net.lenni0451.classtransform:core:${project.classtransform_version}") {
+        exclude module: "asm"
+        exclude module: "asm-commons"
+        exclude module: "asm-tree"
+    }
 
-	// Fabric's jar in jar system doesn't support transitive dependencies, so we have to manually add them
-	afterEvaluate {
-		configurations.jij.incoming.resolutionResult.allDependencies {
-			dependencies.include(dependencies.implementation(dependencies.compileOnlyApi(requested.toString())))
-		}
-	}
+    // Fabric's jar in jar system doesn't support transitive dependencies, so we have to manually add them
+    afterEvaluate {
+        configurations.jij.incoming.resolutionResult.allDependencies {
+            dependencies.include(dependencies.implementation(dependencies.compileOnlyApi(requested.toString())))
+        }
+    }
 }
 
 processResources {
-	inputs.property "version", project.version
+    inputs.property "version", project.version
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
 }
 
 java {
-	withSourcesJar()
-	withJavadocJar()
+    withSourcesJar()
+    withJavadocJar()
 
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 jar {
-	// Add all dependencies which are included using "jis" to the jar file
-	dependsOn configurations.jis
-	from {
-		duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-		configurations.jis.collect {
-			zipTree(it)
-		}
-	}
-	// Rename the project's license file to LICENSE_<project_name> to avoid conflicts
-	from("LICENSE") {
-		rename {
-			"${it}_${project.maven_name}"
-		}
-	}
+    // "jis" contains the mappings.jar file, this hacky code renames its mappings.tiny file to afl_mappings.tiny to avoid conflicts
+    dependsOn configurations.jis
+    File mappingsFile = zipTree(configurations.jis.singleFile).matching { include "mappings/mappings.tiny" }.singleFile
+    from(mappingsFile) {
+        rename {
+            "afl_mappings.tiny"
+        }
+    }
+
+    // Rename the project's license file to LICENSE_<project_name> to avoid conflicts
+    from("LICENSE") {
+        rename {
+            "${it}_${project.maven_name}"
+        }
+    }
 }
 
 publishing {
-	repositories {
-		maven {
-			name = "reposilite"
-			url = "https://maven.lenni0451.net/" + (project.version.endsWith("SNAPSHOT") ? "snapshots" : "releases")
+    repositories {
+        maven {
+            name = "reposilite"
+            url = "https://maven.lenni0451.net/" + (project.version.endsWith("SNAPSHOT") ? "snapshots" : "releases")
 
-			credentials(PasswordCredentials)
-			authentication {
-				basic(BasicAuthentication)
-			}
-		}
-		maven {
-			name = "ossrh"
-			def releasesUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
-			def snapshotsUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-			url = project.version.endsWith("SNAPSHOT") ? snapshotsUrl : releasesUrl
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
+        maven {
+            name = "ossrh"
+            def releasesUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = project.version.endsWith("SNAPSHOT") ? snapshotsUrl : releasesUrl
 
-			credentials(PasswordCredentials)
-			authentication {
-				basic(BasicAuthentication)
-			}
-		}
-	}
-	publications {
-		maven(MavenPublication) {
-			artifactId = project.archivesBaseName
-			groupId = project.group
-			version = project.version
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            artifactId = project.archivesBaseName
+            groupId = project.group
+            version = project.version
 
-			from components.java
+            from components.java
 
-			pom {
-				name = artifactId
-				description = "A series of cursed Fabric hacks and utilities which break everything."
-				url = "https://github.com/FlorianMichael/AsmFabricLoader"
-				licenses {
-					license {
-						name = "Apache-2.0 license"
-						url = "https://github.com/FlorianMichael/AsmFabricLoader/blob/main/LICENSE"
-					}
-				}
-				developers {
-					developer {
-						id = "FlorianMichael"
-					}
-				}
-				scm {
-					connection = "scm:git:git://github.com/FlorianMichael/AsmFabricLoader.git"
-					developerConnection = "scm:git:ssh://github.com/FlorianMichael/AsmFabricLoader.git"
-					url = "github.com/FlorianMichael/AsmFabricLoader"
-				}
-			}
-		}
-	}
+            pom {
+                name = artifactId
+                description = "A series of cursed Fabric hacks and utilities which break everything."
+                url = "https://github.com/FlorianMichael/AsmFabricLoader"
+                licenses {
+                    license {
+                        name = "Apache-2.0 license"
+                        url = "https://github.com/FlorianMichael/AsmFabricLoader/blob/main/LICENSE"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "FlorianMichael"
+                    }
+                }
+                scm {
+                    connection = "scm:git:git://github.com/FlorianMichael/AsmFabricLoader.git"
+                    developerConnection = "scm:git:ssh://github.com/FlorianMichael/AsmFabricLoader.git"
+                    url = "github.com/FlorianMichael/AsmFabricLoader"
+                }
+            }
+        }
+    }
 }
 
 signing {
-	setRequired false
-	sign configurations.archives
-	sign publishing.publications.maven
+    setRequired false
+    sign configurations.archives
+    sign publishing.publications.maven
 }
 
 project.tasks.withType(PublishToMavenRepository).forEach {
-	it.dependsOn(project.tasks.withType(Sign))
+    it.dependsOn(project.tasks.withType(Sign))
 }

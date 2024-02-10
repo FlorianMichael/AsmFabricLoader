@@ -40,7 +40,7 @@ public class MixinClassLoaderConstants {
             MAPPINGS = new VoidMapper();
         } else {
             // If we are in prod, we copy the mappings from the jar to a temp file and use that
-            MAPPINGS = new TinyV2Mapper(MapperConfig.create().fillSuperMappings(true), AFLConstants.class.getResourceAsStream("/mappings/mappings.tiny"), "named", "intermediary");
+            MAPPINGS = new TinyV2Mapper(MapperConfig.create().fillSuperMappings(true), AFLConstants.getMappingsFile(), "named", "intermediary");
         }
     }
 
