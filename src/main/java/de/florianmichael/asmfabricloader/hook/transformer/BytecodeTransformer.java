@@ -19,13 +19,35 @@ package de.florianmichael.asmfabricloader.hook.transformer;
 
 import net.lenni0451.classtransform.annotations.CTransformer;
 import net.lenni0451.classtransform.annotations.injection.COverride;
+import org.objectweb.asm.Opcodes;
 
+import java.util.HashMap;
+import java.util.Map;
+
+// Improves loading speed by caching the opcode names instead of using reflection every time
 @CTransformer(name = "org.spongepowered.asm.util.Bytecode")
 public class BytecodeTransformer {
 
+    private static final Map<String, Integer> afl$OP_CODE_CACHE = new HashMap<>();
+
+    static {
+        for (java.lang.reflect.Field f : Opcodes.class.getDeclaredFields()) {
+            if (f.getType() == Integer.TYPE) {
+                try {
+                    afl$OP_CODE_CACHE.put(f.getName(), f.getInt(null));
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
     @COverride
     private static String getOpcodeName(int opcode, String start, int min) {
-        return ""; // This method does nothing and is just a waste of time
+        if (opcode >= min && afl$OP_CODE_CACHE.containsKey(start) && afl$OP_CODE_CACHE.get(start) == opcode) {
+            return start;
+        }
+        return opcode >= 0 ? String.valueOf(opcode) : "UNKNOWN";
     }
 
 }
