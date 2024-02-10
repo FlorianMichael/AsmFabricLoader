@@ -46,8 +46,9 @@ public class BytecodeTransformer {
     private static String getOpcodeName(int opcode, String start, int min) {
         if (opcode >= min && afl$OP_CODE_CACHE.containsKey(start) && afl$OP_CODE_CACHE.get(start) == opcode) {
             return start;
+        } else {
+            return opcode >= 0 ? String.valueOf(opcode) : "UNKNOWN";
         }
-        return opcode >= 0 ? String.valueOf(opcode) : "UNKNOWN";
     }
 
 }
