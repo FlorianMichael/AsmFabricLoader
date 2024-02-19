@@ -114,7 +114,7 @@ You can also use the Unmixer via the `fabric.mod.json` file:
 {
   "custom": {
     "afl:unmixer": [
-      "net/fabricmc/api/mixin/v1/MixinEnvironment"
+      "net.fabricmc.api.mixin.v1.MixinEnvironment"
     ]
   }
 }
@@ -126,7 +126,7 @@ You can also group the packages together:
 {
   "custom": {
     "afl:unmixer": {
-      "net/fabricmc/api/mixin/v1": [
+      "net.fabricmc.api.mixin.v1": [
         "MixinEnvironment"
       ]
     }
