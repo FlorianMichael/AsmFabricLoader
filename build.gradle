@@ -74,7 +74,6 @@ jar {
             "afl_mappings.tiny"
         }
     }
-
     // Rename the project's license file to LICENSE_<project_name> to avoid conflicts
     from("LICENSE") {
         rename {

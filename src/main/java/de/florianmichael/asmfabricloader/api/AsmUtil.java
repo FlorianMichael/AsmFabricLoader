@@ -39,6 +39,14 @@ public class AsmUtil {
     }
 
     /**
+     * @param input A class path
+     * @return The class path converted to class name format (Replaced all '/' with '.')
+     */
+    public static String normalizeClassName(final String input) {
+        return input.replace("/", ".");
+    }
+
+    /**
      * @param owner A class
      * @return All superclasses of the given class as a list of strings (formatted by {@link #normalizeDescriptor(String)}
      */

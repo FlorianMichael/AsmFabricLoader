@@ -17,6 +17,7 @@
 
 package de.florianmichael.asmfabricloader.loader.feature;
 
+import de.florianmichael.asmfabricloader.api.AsmUtil;
 import de.florianmichael.asmfabricloader.loader.AFLFeature;
 import de.florianmichael.asmfabricloader.loader.classloading.AFLConstants;
 import net.fabricmc.loader.api.ModContainer;
@@ -65,10 +66,10 @@ public class Unmixer {
      */
     public void unloadMixinClass(final String path) {
         final Set<String> mixins = RStream.of(class_MIXINCONFIG).fields().by(field_MIXINCONFIG_globalMixinList).get();
-        mixins.add(path);
+        mixins.add(AsmUtil.normalizeClassName(path));
 
         if (AFLConstants.isDebugEnabled()) {
-            AFLConstants.LOGGER.warn("Unloaded mixin class " + path);
+            AFLConstants.LOGGER.warn("Unloaded mixin class " + AsmUtil.normalizeClassName(path));
         }
     }
 
