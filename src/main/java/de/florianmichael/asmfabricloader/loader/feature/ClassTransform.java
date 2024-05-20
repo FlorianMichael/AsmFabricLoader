@@ -52,7 +52,7 @@ public final class ClassTransform {
             }
         });
         if (AFLConstants.isDebugEnabled()) {
-            AFLConstants.LOGGER.info("Loaded " + modsToTransformerJsons.size() + " transformer config" + (modsToTransformerJsons.size() != 1 ? "s" : ""));
+            AFLConstants.LOGGER.info("Loaded {} transformer config{}", modsToTransformerJsons.size(), modsToTransformerJsons.size() != 1 ? "s" : "");
         }
 
         javaTransformerManager = new TransformerManager(new BasicClassProvider(), MixinClassLoaderConstants.MAPPINGS);
@@ -79,7 +79,7 @@ public final class ClassTransform {
 
     private void parseTransformer(final ModContainer provider, final String filePath) {
         if (!filePath.endsWith(".json")) {
-            AFLConstants.LOGGER.error("Transformer config file " + filePath + " from " + provider.getMetadata().getId() + " is not a json file");
+            AFLConstants.LOGGER.error("Transformer config file {} from {} is not a json file", filePath, provider.getMetadata().getId());
             return;
         }
 
@@ -93,9 +93,9 @@ public final class ClassTransform {
                     MixinClassLoaderConstants.MIXING_TRANSFORMERS.add(config.packageName() + "." + mixinTransformer);
                 }
             } catch (IOException e) {
-                AFLConstants.LOGGER.error("Failed to read transformer config file " + filePath + " from " + provider.getMetadata().getId(), e);
+                AFLConstants.LOGGER.error("Failed to read transformer config file {} from {}", filePath, provider.getMetadata().getId(), e);
             }
-        }, () -> AFLConstants.LOGGER.error("Transformer config file " + filePath + " from " + provider.getMetadata().getId() + " does not exist"));
+        }, () -> AFLConstants.LOGGER.error("Transformer config file {} from {} does not exist", filePath, provider.getMetadata().getId()));
     }
 
 

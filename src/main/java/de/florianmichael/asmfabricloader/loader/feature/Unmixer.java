@@ -69,7 +69,7 @@ public class Unmixer {
         mixins.add(AsmUtil.normalizeClassName(path));
 
         if (AFLConstants.isDebugEnabled()) {
-            AFLConstants.LOGGER.warn("Unloaded mixin class " + AsmUtil.normalizeClassName(path));
+            AFLConstants.LOGGER.warn("Unloaded mixin class {}", AsmUtil.normalizeClassName(path));
         }
     }
 
