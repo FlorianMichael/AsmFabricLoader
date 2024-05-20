@@ -5,19 +5,27 @@
   "name": "AsmFabricLoader-TestMod",
   "description": "Test mod for AsmFabricLoader features",
   "authors": [
-    "FlorianMichael/EnZaXD"
+    {
+      "name": "FlorianMichael/EnZaXD",
+      "contact": {
+        "email": "florian.michael07@gmail.com",
+        "homepage": "https://github.com/FlorianMichael"
+      }
+    }
   ],
   "contact": {
-    "homepage": "https://github.com/FlorianMichael",
-    "sources": "https://github.com/FlorianMichael/AsmFabricLoader"
+    "homepage": "https://florianmichael.de/",
+    "sources": "https://github.com/FlorianMichael/AsmFabricLoader",
+    "issues": "https://github.com/ViaVersion/AsmFabricLoader/issues",
+    "email": "florian.michael07@gmail.com"
   },
+  "license": "Apache-2.0",
+  "environment": "*",
   "entrypoints": {
     "afl:prePreLaunch": ["de.florianmichael.asmfabricloader.testmod.TestMod"],
     "afl:prePrePreLaunch": ["de.florianmichael.asmfabricloader.testmod.TestMod"],
     "afl:instrumentation": ["de.florianmichael.asmfabricloader.testmod.TestMod"]
   },
-  "license": "Apache-2.0",
-  "environment": "*",
   "mixins": [
     "testmod.mixins.json"
   ],

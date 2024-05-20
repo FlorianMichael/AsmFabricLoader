@@ -35,6 +35,13 @@ import java.util.function.Consumer;
  */
 public class EarlyRiser {
 
+    /**
+     * Invokes a given consumer for all early entrypoints with a specific name and type.
+     *
+     * @param name     the entrypoint name
+     * @param type     the entrypoint type
+     * @param consumer the consumer to invoke
+     */
     public static <T> void invokeEntrypoints(final String name, final Class<T> type, final Consumer<T> consumer) {
         getEarlyEntrypoints(name, type).forEach(consumer);
     }
@@ -44,7 +51,6 @@ public class EarlyRiser {
      *
      * @param name the entrypoint name
      * @param type the entrypoint type
-     * @param <T>  the entrypoint type
      * @return the list of entrypoints
      */
     public static <T> List<T> getEarlyEntrypoints(final String name, final Class<T> type) {

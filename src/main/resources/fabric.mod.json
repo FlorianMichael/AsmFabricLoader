@@ -5,11 +5,19 @@
   "name": "AsmFabricLoader",
   "description": "A series of cursed Fabric hacks and utilities which break everything.",
   "authors": [
-    "FlorianMichael/EnZaXD"
+    {
+      "name": "FlorianMichael/EnZaXD",
+      "contact": {
+        "email": "florian.michael07@gmail.com",
+        "homepage": "https://github.com/FlorianMichael"
+      }
+    }
   ],
   "contact": {
-    "homepage": "https://github.com/FlorianMichael",
-    "sources": "https://github.com/FlorianMichael/AsmFabricLoader"
+    "homepage": "https://florianmichael.de/",
+    "sources": "https://github.com/FlorianMichael/AsmFabricLoader",
+    "issues": "https://github.com/ViaVersion/AsmFabricLoader/issues",
+    "email": "florian.michael07@gmail.com"
   },
   "license": "Apache-2.0",
   "icon": "assets/asmfabricloader/icon.png",
