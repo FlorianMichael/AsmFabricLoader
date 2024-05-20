@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package de.florianmichael.asmfabricloader.test;
+package de.florianmichael.asmfabricloader.testmod;
 
 import de.florianmichael.asmfabricloader.api.event.InstrumentationEntrypoint;
 import de.florianmichael.asmfabricloader.api.event.PrePreLaunchEntrypoint;

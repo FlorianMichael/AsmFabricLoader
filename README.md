@@ -21,6 +21,7 @@ A series of cursed Fabric hacks and utilities which break everything.
       * [Registering transformers](#registering-transformers)
     * [Environments](#environments)
     * [Debug options](#debug-options)
+    * [Testing](#testing)
 <!-- TOC -->
 
 ## Why?
@@ -238,3 +239,20 @@ There are a few system properties you can enable to debug AsmFabricLoader:
 
 ```-Dclasstransform.dumpClasses=``` will dump all classes transformed by ClassTransform
 to `run directory` / `classtransform`
+
+### Testing
+
+The `TestMod` submodule contains a Fabric mod to test various features of AsmFabricLoader. You can run the tests by
+building both root project and the test mod project and then running them in a production environment.
+
+A test running successfully will be indicated by the following message in the console:
+
+```
+[TestMod] <NameOfTheTest> passed!
+```
+
+All tests have been passed if you see the following message in the console:
+
+```
+[TestMod] All tests passed!
+```

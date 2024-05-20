@@ -12,9 +12,9 @@
     "sources": "https://github.com/FlorianMichael/AsmFabricLoader"
   },
   "entrypoints": {
-    "afl:prePreLaunch": ["de.florianmichael.asmfabricloader.test.TestMod"],
-    "afl:prePrePreLaunch": ["de.florianmichael.asmfabricloader.test.TestMod"],
-    "afl:instrumentation": ["de.florianmichael.asmfabricloader.test.TestMod"]
+    "afl:prePreLaunch": ["de.florianmichael.asmfabricloader.testmod.TestMod"],
+    "afl:prePrePreLaunch": ["de.florianmichael.asmfabricloader.testmod.TestMod"],
+    "afl:instrumentation": ["de.florianmichael.asmfabricloader.testmod.TestMod"]
   },
   "license": "Apache-2.0",
   "environment": "*",

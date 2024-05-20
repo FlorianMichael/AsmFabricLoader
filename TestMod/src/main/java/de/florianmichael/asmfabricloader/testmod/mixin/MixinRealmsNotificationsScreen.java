@@ -15,21 +15,22 @@
  * limitations under the License.
  */
 
-package de.florianmichael.asmfabricloader.test.mixin;
+package de.florianmichael.asmfabricloader.testmod.mixin;
 
-import net.minecraft.client.gui.screen.TitleScreen;
+import de.florianmichael.asmfabricloader.testmod.TestMod;
+import net.minecraft.client.realms.gui.screen.RealmsNotificationsScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(TitleScreen.class)
-public class UnmixerTest {
+@Mixin(RealmsNotificationsScreen.class)
+public class MixinRealmsNotificationsScreen {
 
-    @Inject(method = "init", at = @At("HEAD"))
-    public void testInject(CallbackInfo ci) {
-        System.out.println("This print should never be seen, quitting game!");
-        System.exit(0);
+    @Inject(method = "<init>", at = @At("RETURN"))
+    public void unmixerTest(CallbackInfo ci) {
+        // If unmixer doesn't work, this code won't run and the test will fail
+        TestMod.passTest("UnmixerTest.testInject()");
     }
 
 }

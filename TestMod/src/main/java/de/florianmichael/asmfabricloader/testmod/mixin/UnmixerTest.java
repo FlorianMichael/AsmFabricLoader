@@ -15,23 +15,21 @@
  * limitations under the License.
  */
 
-package de.florianmichael.asmfabricloader.test.transformer;
+package de.florianmichael.asmfabricloader.testmod.mixin;
 
-import net.fabricmc.loader.api.FabricLoader;
-import net.lenni0451.classtransform.annotations.CInline;
-import net.lenni0451.classtransform.annotations.CTarget;
-import net.lenni0451.classtransform.annotations.CTransformer;
-import net.lenni0451.classtransform.annotations.injection.CInject;
+import net.minecraft.client.gui.screen.TitleScreen;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@CTransformer(FabricLoader.class)
-public class JavaTransformerTest {
+@Mixin(TitleScreen.class)
+public class UnmixerTest {
 
-    @CInline
-    @CInject(method = "getInstance", target = @CTarget("HEAD"))
-    public static void testInject() {
-        if (System.getProperty("asmfabricloader.test.java") == null) {
-            System.setProperty("asmfabricloader.test.java", "true");
-        }
+    @Inject(method = "init", at = @At("HEAD"))
+    public void testInject(CallbackInfo ci) {
+        System.out.println("This print should never be seen, quitting game!");
+        System.exit(0);
     }
 
 }

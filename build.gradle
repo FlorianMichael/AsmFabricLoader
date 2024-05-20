@@ -1,12 +1,10 @@
 plugins {
     id "maven-publish"
     id "signing"
-    id "fabric-loom" version "1.6-SNAPSHOT" apply false
+    id "fabric-loom" version "1.6-SNAPSHOT"
 }
 
 base {
-    version = project.maven_version
-    group = project.maven_group
     archivesName = project.maven_name
 }
 
@@ -42,6 +40,11 @@ dependencies {
 
 allprojects {
     apply plugin: "fabric-loom"
+
+    base {
+        version = project.maven_version
+        group = project.maven_group
+    }
 
     configurations {
         jis // jar in jar sources configuration

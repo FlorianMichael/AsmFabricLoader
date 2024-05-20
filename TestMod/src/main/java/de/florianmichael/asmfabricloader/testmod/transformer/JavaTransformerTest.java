@@ -15,22 +15,23 @@
  * limitations under the License.
  */
 
-package de.florianmichael.asmfabricloader.test.mixin;
+package de.florianmichael.asmfabricloader.testmod.transformer;
 
-import de.florianmichael.asmfabricloader.test.TestMod;
-import net.minecraft.client.realms.gui.screen.RealmsNotificationsScreen;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import net.fabricmc.loader.api.FabricLoader;
+import net.lenni0451.classtransform.annotations.CInline;
+import net.lenni0451.classtransform.annotations.CTarget;
+import net.lenni0451.classtransform.annotations.CTransformer;
+import net.lenni0451.classtransform.annotations.injection.CInject;
 
-@Mixin(RealmsNotificationsScreen.class)
-public class MixinRealmsNotificationsScreen {
+@CTransformer(FabricLoader.class)
+public class JavaTransformerTest {
 
-    @Inject(method = "<init>", at = @At("RETURN"))
-    public void unmixerTest(CallbackInfo ci) {
-        // If unmixer doesn't work, this code won't run and the test will fail
-        TestMod.passTest("UnmixerTest.testInject()");
+    @CInline
+    @CInject(method = "getInstance", target = @CTarget("HEAD"))
+    public static void testInject() {
+        if (System.getProperty("asmfabricloader.test.java") == null) {
+            System.setProperty("asmfabricloader.test.java", "true");
+        }
     }
 
 }

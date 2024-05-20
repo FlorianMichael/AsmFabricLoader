@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "de.florianmichael.asmfabricloader.test.mixin",
+  "package": "de.florianmichael.asmfabricloader.testmod.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
     "MixinRealmsNotificationsScreen",
