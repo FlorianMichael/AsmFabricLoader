@@ -25,7 +25,7 @@ import java.lang.instrument.Instrumentation;
 
 public class TestMod implements InstrumentationEntrypoint, PrePreLaunchEntrypoint, PrePrePreLaunchEntrypoint {
 
-    public static final int TEST_COUNT = 4;
+    public static final int TEST_COUNT = 5;
     private static int passedTestCount;
 
     @Override
@@ -36,10 +36,16 @@ public class TestMod implements InstrumentationEntrypoint, PrePreLaunchEntrypoin
     @Override
     public void onMixinPluginLaunch() {
         passTest("onMixinPluginLaunch");
+
+        // Use system property to bypass class loading issues, counterpart in JavaTransformerTest
+        if (System.getProperty("asmfabricloader.test.java") != null) {
+            passTest("JavaTransformerTest.testInject()");
+        }
     }
 
     @Override
     public void onLanguageAdapterLaunch() {
+        System.setProperty("asmfabricloader.debug", "true");
         passTest("onLanguageAdapterLaunch");
     }
 
@@ -51,7 +57,7 @@ public class TestMod implements InstrumentationEntrypoint, PrePreLaunchEntrypoin
         }
     }
 
-    private static void log(final String message) { // Can't use logger since code execution is too early
+    public static void log(final String message) { // Can't use logger since code execution is too early
         System.out.println("[TestMod] " + message);
     }
 

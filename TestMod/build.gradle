@@ -1,0 +1,9 @@
+base {
+    version = project.maven_version
+    group = project.maven_group
+}
+
+dependencies {
+    implementation "net.lenni0451.classtransform:core:${project.classtransform_version}"
+    modImplementation project(":")
+}

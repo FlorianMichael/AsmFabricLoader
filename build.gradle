@@ -74,13 +74,6 @@ allprojects {
     }
 }
 
-subprojects {
-    dependencies {
-        implementation "net.lenni0451.classtransform:core:${project.classtransform_version}"
-        modImplementation project(":")
-    }
-}
-
 jar {
     // "jis" contains the mappings.jar file, this hacky code renames its mappings.tiny file to afl_mappings.tiny to avoid conflicts
     dependsOn configurations.jis

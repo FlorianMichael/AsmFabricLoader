@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "de.florianmichael.asmfabricloader.test.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "MixinRealmsNotificationsScreen",
+    "UnmixerTest"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
