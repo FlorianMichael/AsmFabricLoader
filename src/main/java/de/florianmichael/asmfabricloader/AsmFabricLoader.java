@@ -17,6 +17,7 @@
 
 package de.florianmichael.asmfabricloader;
 
+import de.florianmichael.asmfabricloader.api.EarlyRiser;
 import de.florianmichael.asmfabricloader.api.event.PrePrePreLaunchEntrypoint;
 import de.florianmichael.asmfabricloader.loader.classloading.AFLConstants;
 import de.florianmichael.asmfabricloader.loader.feature.JarBooter;
@@ -47,9 +48,9 @@ public class AsmFabricLoader {
     }
 
     public AsmFabricLoader() {
-        for (var prePreLaunch : FabricLoader.getInstance().getEntrypoints(PrePrePreLaunchEntrypoint.getEntrypointName(), PrePrePreLaunchEntrypoint.class)) {
-            prePreLaunch.onLanguageAdapterLaunch();
-        }
+        EarlyRiser.invokeEntrypoints(PrePrePreLaunchEntrypoint.getEntrypointName(),
+                PrePrePreLaunchEntrypoint.class, PrePrePreLaunchEntrypoint::onLanguageAdapterLaunch);
+
         final Collection<ModContainer> mods = FabricLoader.getInstance().getAllMods();
 
         classTransform = new ClassTransform(mods);

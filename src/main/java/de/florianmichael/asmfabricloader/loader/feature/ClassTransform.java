@@ -18,12 +18,12 @@
 package de.florianmichael.asmfabricloader.loader.feature;
 
 import com.google.gson.Gson;
+import de.florianmichael.asmfabricloader.api.EarlyRiser;
 import de.florianmichael.asmfabricloader.api.event.InstrumentationEntrypoint;
 import de.florianmichael.asmfabricloader.loader.AFLFeature;
 import de.florianmichael.asmfabricloader.loader.classloading.AFLConstants;
 import de.florianmichael.asmfabricloader.loader.classloading.MixinClassLoaderConstants;
 import de.florianmichael.asmfabricloader.loader.feature.classtransform.ClassTransformJson;
-import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
 import net.lenni0451.classtransform.TransformerManager;
@@ -66,9 +66,8 @@ public final class ClassTransform {
 
         try {
             final Instrumentation instrumentation = Agents.getInstrumentation();
-            for (var entrypoint : FabricLoader.getInstance().getEntrypoints(InstrumentationEntrypoint.getEntrypointName(), InstrumentationEntrypoint.class)) {
-                entrypoint.onGetInstrumentation(instrumentation);
-            }
+            EarlyRiser.invokeEntrypoints(InstrumentationEntrypoint.getEntrypointName(), InstrumentationEntrypoint.class,
+                    entrypoint -> entrypoint.onGetInstrumentation(instrumentation));
 
             javaTransformerManager.hookInstrumentation(instrumentation);
             AFLConstants.LOGGER.error("KnotClassLoader, you fool! You fell victim to one of the classic blunders!");
