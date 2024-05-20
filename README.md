@@ -14,6 +14,7 @@ A series of cursed Fabric hacks and utilities which break everything.
     * [Mappings API](#mappings-api)
     * [Unmixer](#unmixer)
     * [Jar Booter](#jar-booter)
+    * [Early riser](#early-riser)
     * [Class Transform](#class-transform)
       * [Transformer config](#transformer-config)
       * [Example transformer](#example-transformer)
@@ -151,6 +152,10 @@ This can be useful if you want to allow the user to replace a library jar file y
 ```
 
 This will load all jar files from the run directory/libs folder to the front of the classpath.
+
+### Early riser
+
+Utility to create and invoke mod entrypoints before Fabric has finished loading entrypoints. See the `EarlyRiser` class
 
 ### Class Transform
 
