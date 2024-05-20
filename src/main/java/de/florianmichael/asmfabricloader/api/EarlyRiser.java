@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Utility to run and create entrypoints before mod metadata is loaded.
+ * Utility to manually create entrypoints from mods before fabric loader is doing it.
+ * This can be useful if you want to invoke entrypoints in language adapter loading stage.
  */
 public class EarlyRiser {
 
@@ -38,6 +39,14 @@ public class EarlyRiser {
         getEarlyEntrypoints(name, type).forEach(consumer);
     }
 
+    /**
+     * Get all early entrypoints for a specific name and type.
+     *
+     * @param name the entrypoint name
+     * @param type the entrypoint type
+     * @param <T>  the entrypoint type
+     * @return the list of entrypoints
+     */
     public static <T> List<T> getEarlyEntrypoints(final String name, final Class<T> type) {
         final List<T> entrypoints = new ArrayList<>();
         for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
@@ -54,6 +63,14 @@ public class EarlyRiser {
         return entrypoints;
     }
 
+    /**
+     * Create an entrypoint from a mod. Failure will result in a null return value and a log message.
+     *
+     * @param mod   the mod container
+     * @param value the entrypoint value
+     * @param type  the entrypoint type
+     * @return the entrypoint instance
+     */
     public static <T> T createEntrypoint(final ModContainer mod, final String value, final Class<T> type) {
         try {
             return DefaultLanguageAdapter.INSTANCE.create(mod, value, type);

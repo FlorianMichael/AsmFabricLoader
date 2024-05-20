@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "asmfabricloader-testmod",
+  "version": "${version}",
+  "name": "AsmFabricLoader-TestMod",
+  "description": "Test mod for AsmFabricLoader features",
+  "authors": [
+    "FlorianMichael/EnZaXD"
+  ],
+  "contact": {
+    "homepage": "https://github.com/FlorianMichael",
+    "sources": "https://github.com/FlorianMichael/AsmFabricLoader"
+  },
+  "entrypoints": {
+    "afl:prePreLaunch": ["de.florianmichael.asmfabricloader.testmod.TestMod"],
+    "afl:prePrePreLaunch": ["de.florianmichael.asmfabricloader.testmod.TestMod"],
+    "afl:instrumentation": ["de.florianmichael.asmfabricloader.testmod.TestMod"]
+  },
+  "license": "Apache-2.0",
+  "environment": "*",
+  "mixins": [
+    "testmod.mixins.json"
+  ],
+  "custom": {
+    "afl:classtransform": "testmod.classtransform.json",
+    "afl:unmixer": [
+      "de.florianmichael.asmfabricloader.test.mixin.UnmixerTest"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.14.22",
+    "minecraft": ">=1.20.5",
+    "java": ">=17"
+  }
+}

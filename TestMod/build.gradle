@@ -1,0 +1,4 @@
+dependencies {
+    implementation "net.lenni0451.classtransform:core:${project.classtransform_version}"
+    implementation project(":")
+}

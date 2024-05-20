@@ -1,0 +1,8 @@
+{
+  "package": "de.florianmichael.asmfabricloader.test.transformer",
+  "java": [
+    "JavaTransformerTest"
+  ],
+  "mixins": [
+  ]
+}
