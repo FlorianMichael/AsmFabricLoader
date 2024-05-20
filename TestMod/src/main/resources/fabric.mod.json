@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "asmfabricloader-testmod",
+  "version": "${version}",
+  "name": "AsmFabricLoader-TestMod",
+  "description": "Test mod for AsmFabricLoader features",
+  "authors": [
+    "FlorianMichael/EnZaXD"
+  ],
+  "contact": {
+    "homepage": "https://github.com/FlorianMichael",
+    "sources": "https://github.com/FlorianMichael/AsmFabricLoader"
+  },
+  "license": "Apache-2.0",
+  "environment": "*",
+  "custom": {
+    "afl:classtransform": "testmod.classtransform.json"
+  },
+  "depends": {
+    "fabricloader": ">=0.14.22",
+    "minecraft": ">=1.20.5",
+    "java": ">=17"
+  }
+}

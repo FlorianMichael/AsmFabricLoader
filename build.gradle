@@ -1,18 +1,13 @@
 plugins {
     id "maven-publish"
     id "signing"
-    id "fabric-loom" version "1.6-SNAPSHOT"
+    id "fabric-loom" version "1.6-SNAPSHOT" apply false
 }
 
 base {
     version = project.maven_version
     group = project.maven_group
     archivesName = project.maven_name
-}
-
-configurations {
-    jij // jar in jar configuration
-    jis // jar in jar sources configuration
 }
 
 repositories {
@@ -24,11 +19,11 @@ repositories {
     }
 }
 
-dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    jis mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+configurations {
+    jij // jar in jar configuration
+}
 
+dependencies {
     jij "net.fabricmc:tiny-mappings-parser:${project.tiny_mappings_parser_version}"
     jij "net.lenni0451:Reflect:${project.reflect_version}"
     jij("net.lenni0451.classtransform:core:${project.classtransform_version}") {
@@ -45,24 +40,45 @@ dependencies {
     }
 }
 
-processResources {
-    inputs.property "version", project.version
+allprojects {
+    apply plugin: "fabric-loom"
 
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
+    configurations {
+        jis // jar in jar sources configuration
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:${project.minecraft_version}"
+        jis mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
+        modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    }
+
+    processResources {
+        inputs.property "version", project.version
+
+        filesMatching("fabric.mod.json") {
+            expand "version": project.version
+        }
+    }
+
+    java {
+        withSourcesJar()
+        withJavadocJar()
+
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
-java {
-    withSourcesJar()
-    withJavadocJar()
-
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+subprojects {
+    dependencies {
+        implementation "net.lenni0451.classtransform:core:${project.classtransform_version}"
+        modImplementation project(":")
     }
-
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
