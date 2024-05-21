@@ -138,6 +138,8 @@ publishing {
                 developers {
                     developer {
                         id = "FlorianMichael"
+                        name = "EnZaXD"
+                        email = "florian.michael07@gmail.com"
                     }
                 }
                 scm {
