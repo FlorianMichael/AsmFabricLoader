@@ -1,7 +1,7 @@
 plugins {
     id "maven-publish"
     id "signing"
-    id "fabric-loom" version "1.6-SNAPSHOT"
+    id "fabric-loom" version "1.7-SNAPSHOT"
 }
 
 base {
@@ -62,6 +62,10 @@ allprojects {
         filesMatching("fabric.mod.json") {
             expand "version": project.version
         }
+    }
+
+    tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
     }
 
     java {
