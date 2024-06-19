@@ -27,6 +27,7 @@ import java.util.List;
 /**
  * Wrapper for the {@link TinyTree} mappings. This class is used to convert between named and intermediary mappings.
  */
+@Deprecated
 public class MapperBase {
 
     private final TinyTree mappings;

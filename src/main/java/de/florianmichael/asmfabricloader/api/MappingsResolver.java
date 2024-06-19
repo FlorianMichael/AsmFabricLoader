@@ -33,6 +33,7 @@ import java.util.List;
 /**
  * Handles all mappings related stuff. This class is used to convert between named and intermediary mappings.
  */
+@Deprecated
 public class MappingsResolver {
 
     private MapperBase intermediaryToNamed;

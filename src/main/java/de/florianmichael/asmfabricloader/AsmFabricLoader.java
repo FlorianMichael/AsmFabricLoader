@@ -90,6 +90,7 @@ public class AsmFabricLoader {
         return jarBooter;
     }
 
+    @Deprecated
     public MappingsResolver getMappingsResolver() {
         return mappingsResolver;
     }
