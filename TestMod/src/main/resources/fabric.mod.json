@@ -36,8 +36,6 @@
     ]
   },
   "depends": {
-    "fabricloader": ">=0.15",
-    "minecraft": ">=1.20.5",
-    "java": ">=17"
+    "asmfabricloader": "*"
   }
 }

@@ -3,7 +3,7 @@
   "id": "asmfabricloader",
   "version": "${version}",
   "name": "AsmFabricLoader",
-  "description": "A series of cursed Fabric hacks and utilities which break everything.",
+  "description": "${description}",
   "authors": [
     {
       "name": "FlorianMichael/EnZaXD",
@@ -36,7 +36,7 @@
   },
   "depends": {
     "fabricloader": ">=0.15",
-    "minecraft": "1.21",
+    "minecraft": "${mcVersion}",
     "java": ">=21"
   }
 }

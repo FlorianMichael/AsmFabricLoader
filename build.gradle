@@ -42,8 +42,9 @@ allprojects {
     apply plugin: "fabric-loom"
 
     base {
-        version = project.maven_version
         group = project.maven_group
+        version = project.maven_version
+        description = project.maven_description
     }
 
     configurations {
@@ -52,15 +53,17 @@ allprojects {
 
     dependencies {
         minecraft "com.mojang:minecraft:${project.minecraft_version}"
-        jis mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
+        jis mappings("net.fabricmc:yarn:${project.yarn_version}:v2")
         modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     }
 
     processResources {
-        inputs.property "version", project.version
-
         filesMatching("fabric.mod.json") {
-            expand "version": project.version
+            expand (
+                "version": project.version,
+                "description": project.description,
+                "mcVersion": project.minecraft_version
+            )
         }
     }
 
@@ -131,7 +134,7 @@ publishing {
 
             pom {
                 name = artifactId
-                description = "A series of cursed Fabric hacks and utilities which break everything."
+                description = project.description
                 url = "https://github.com/FlorianMichael/AsmFabricLoader"
                 licenses {
                     license {
