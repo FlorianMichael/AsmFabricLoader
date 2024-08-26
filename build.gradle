@@ -62,7 +62,7 @@ allprojects {
             expand (
                 "version": project.version,
                 "description": project.description,
-                "mcVersion": project.minecraft_version
+                "mcVersion": mcVersion()
             )
         }
     }
@@ -81,6 +81,14 @@ allprojects {
 
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+    }
+}
+
+String mcVersion() {
+    if (project.supported_versions.isEmpty()) {
+        return project.minecraft_version
+    } else {
+        return project.supported_versions
     }
 }
 
