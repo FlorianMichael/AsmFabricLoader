@@ -23,7 +23,7 @@ configurations {
 
 dependencies {
     jij "net.fabricmc:tiny-mappings-parser:0.3.0+build.17"
-    jij "net.lenni0451:Reflect:1.3.4"
+    jij "net.lenni0451:Reflect:1.4.0"
     jij("net.lenni0451.classtransform:core:1.14.0") {
         exclude module: "asm"
         exclude module: "asm-commons"
