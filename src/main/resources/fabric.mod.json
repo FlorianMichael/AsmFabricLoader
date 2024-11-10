@@ -36,7 +36,6 @@
   },
   "depends": {
     "fabricloader": ">=0.15",
-    "minecraft": "${mcVersion}",
     "java": ">=21"
   }
 }
