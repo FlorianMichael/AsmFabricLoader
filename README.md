@@ -32,8 +32,8 @@ This is basically a cleanup rewrite of [GrossFabricHacks](https://github.com/Dev
 It also provides the same functionality as [MixinSquared](https://github.com/Bawnorton/MixinSquared).
 
 ## Contact
-If you encounter any issues, please report them on the[issue tracker](https://github.com/FlorianMichael/AsmFabricLoader/issues).  
-If you just want to talk or need help with AsmFabricLoader feel free to join my[Discord](https://discord.gg/BwWhCHUKDf).
+If you encounter any issues, please report them on the [issue tracker](https://github.com/FlorianMichael/AsmFabricLoader/issues).  
+If you just want to talk or need help with AsmFabricLoader feel free to join my [Discord](https://discord.gg/BwWhCHUKDf).
 
 ## How to add this to your project
 ### Gradle/Maven
