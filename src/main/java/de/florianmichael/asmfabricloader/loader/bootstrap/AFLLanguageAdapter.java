@@ -18,13 +18,13 @@
 package de.florianmichael.asmfabricloader.loader.bootstrap;
 
 import de.florianmichael.asmfabricloader.AsmFabricLoader;
-import de.florianmichael.asmfabricloader.api.AsmUtil;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.LanguageAdapter;
 import net.fabricmc.loader.api.LanguageAdapterException;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.fabricmc.loader.impl.launch.knot.Knot;
+import net.lenni0451.reflect.stream.RStream;
 
 public class AFLLanguageAdapter implements LanguageAdapter {
 
@@ -35,15 +35,7 @@ public class AFLLanguageAdapter implements LanguageAdapter {
     // This is needed because we need to access classes loaded in the system classloader
     private static void unlockSystemClassloader() {
         ((FabricLoaderImpl) FabricLoader.getInstance()).getGameProvider().unlockClassPath(Knot.getLauncher());
-
-        try {
-            final Class<?> knotClassDelegate = Class.forName("net.fabricmc.loader.impl.launch.knot.KnotClassDelegate");
-
-            final long offset = AsmUtil.getTheUnsafe().staticFieldOffset(knotClassDelegate.getDeclaredField("DISABLE_ISOLATION"));
-            AsmUtil.getTheUnsafe().putBoolean(knotClassDelegate, offset, true);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        RStream.of("net.fabricmc.loader.impl.launch.knot.KnotClassDelegate").fields().by("DISABLE_ISOLATION").set(true);
     }
 
     static {
