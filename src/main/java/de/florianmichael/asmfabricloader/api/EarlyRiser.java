@@ -19,13 +19,10 @@ package de.florianmichael.asmfabricloader.api;
 
 import de.florianmichael.asmfabricloader.loader.classloading.AFLConstants;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.LanguageAdapterException;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.impl.metadata.EntrypointMetadata;
 import net.fabricmc.loader.impl.metadata.LoaderModMetadata;
-import net.fabricmc.loader.impl.util.DefaultLanguageAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -43,45 +40,24 @@ public class EarlyRiser {
      * @param consumer the consumer to invoke
      */
     public static <T> void invokeEntrypoints(final String name, final Class<T> type, final Consumer<T> consumer) {
-        getEarlyEntrypoints(name, type).forEach(consumer);
-    }
-
-    /**
-     * Get all early entrypoints for a specific name and type.
-     *
-     * @param name the entrypoint name
-     * @param type the entrypoint type
-     * @return the list of entrypoints
-     */
-    public static <T> List<T> getEarlyEntrypoints(final String name, final Class<T> type) {
-        final List<T> entrypoints = new ArrayList<>();
         for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
             if (mod.getMetadata() instanceof LoaderModMetadata modMetadata) {
                 final List<EntrypointMetadata> entrypointMetadata = modMetadata.getEntrypoints(name);
                 for (EntrypointMetadata metadata : entrypointMetadata) {
-                    final T entrypoint = createEntrypoint(mod, metadata.getValue(), type);
-                    if (entrypoint != null) {
-                        entrypoints.add(entrypoint);
+                    final T instance = createInstance(metadata.getValue(), type);
+                    if (instance != null) {
+                        consumer.accept(instance);
                     }
                 }
             }
         }
-        return entrypoints;
     }
 
-    /**
-     * Create an entrypoint from a mod. Failure will result in a null return value and a log message.
-     *
-     * @param mod   the mod container
-     * @param value the entrypoint value
-     * @param type  the entrypoint type
-     * @return the entrypoint instance
-     */
-    public static <T> T createEntrypoint(final ModContainer mod, final String value, final Class<T> type) {
+    private static <T> T createInstance(final String className, final Class<T> type) {
         try {
-            return DefaultLanguageAdapter.INSTANCE.create(mod, value, type);
-        } catch (LanguageAdapterException e) {
-            AFLConstants.LOGGER.error("Failed to load early entrypoint {} for mod {}", value, mod.getMetadata().getId(), e);
+            return type.cast(Class.forName(className).getConstructor().newInstance());
+        } catch (Exception e) {
+            AFLConstants.LOGGER.error("Failed to load early entrypoint {}", className, e);
             return null;
         }
     }
