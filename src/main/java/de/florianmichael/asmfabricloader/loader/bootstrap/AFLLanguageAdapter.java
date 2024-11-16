@@ -19,10 +19,12 @@ package de.florianmichael.asmfabricloader.loader.bootstrap;
 
 import de.florianmichael.asmfabricloader.AsmFabricLoader;
 import de.florianmichael.asmfabricloader.api.AsmUtil;
-import de.florianmichael.asmfabricloader.loader.classloading.AFLConstants;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.LanguageAdapter;
 import net.fabricmc.loader.api.LanguageAdapterException;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
+import net.fabricmc.loader.impl.launch.knot.Knot;
 
 public class AFLLanguageAdapter implements LanguageAdapter {
 
@@ -32,6 +34,8 @@ public class AFLLanguageAdapter implements LanguageAdapter {
     // Forces the fabric.debug.disableClassPathIsolation system property to be true which disables the classpath isolation
     // This is needed because we need to access classes loaded in the system classloader
     private static void unlockSystemClassloader() {
+        ((FabricLoaderImpl) FabricLoader.getInstance()).getGameProvider().unlockClassPath(Knot.getLauncher());
+
         try {
             final Class<?> knotClassDelegate = Class.forName("net.fabricmc.loader.impl.launch.knot.KnotClassDelegate");
 
