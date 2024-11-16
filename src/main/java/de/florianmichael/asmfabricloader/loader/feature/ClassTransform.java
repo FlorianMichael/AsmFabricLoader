@@ -52,7 +52,7 @@ public final class ClassTransform {
             }
         });
         if (AFLConstants.isDebugEnabled()) {
-            AFLConstants.LOGGER.info("Loaded {} transformer config {}", modsToTransformerJsons.size(), modsToTransformerJsons.size() != 1 ? "s" : "");
+            AFLConstants.LOGGER.info("Loaded {} transformer config{}", modsToTransformerJsons.size(), modsToTransformerJsons.size() != 1 ? "s" : "");
         }
 
         javaTransformerManager = new TransformerManager(new BasicClassProvider(), MixinClassLoaderConstants.MAPPINGS);
