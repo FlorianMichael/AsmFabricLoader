@@ -1,7 +1,7 @@
 plugins {
     id "maven-publish"
     id "signing"
-    id "fabric-loom" version "1.8-SNAPSHOT"
+    id "fabric-loom" version "1.10-SNAPSHOT"
 }
 
 base {
