@@ -15,6 +15,10 @@ repositories {
         name = "Lenni0451"
         url = "https://maven.lenni0451.net/everything"
     }
+    maven {
+        name = "ParchmentMC"
+        url = "https://maven.parchmentmc.org"
+    }
 }
 
 configurations {
@@ -53,7 +57,10 @@ allprojects {
 
     dependencies {
         minecraft "com.mojang:minecraft:${project.minecraft_version}"
-        jis mappings("net.fabricmc:yarn:${project.yarn_version}:v2")
+        jis mappings(loom.layered() {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-${project.parchment_version}@zip")
+        })
         modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     }
 

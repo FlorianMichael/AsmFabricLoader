@@ -17,8 +17,8 @@
 
 package de.florianmichael.asmfabricloader.testmod.mixin;
 
+import com.mojang.realmsclient.gui.screens.RealmsNotificationsScreen;
 import de.florianmichael.asmfabricloader.testmod.TestMod;
-import net.minecraft.client.realms.gui.screen.RealmsNotificationsScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

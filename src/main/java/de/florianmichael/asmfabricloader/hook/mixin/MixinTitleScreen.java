@@ -20,27 +20,27 @@ package de.florianmichael.asmfabricloader.hook.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import de.florianmichael.asmfabricloader.AsmFabricLoader;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(TitleScreen.class)
 public class MixinTitleScreen extends Screen {
 
-    public MixinTitleScreen(Text title) {
+    public MixinTitleScreen(Component title) {
         super(title);
     }
 
-    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)I"))
-    public int drawAFLIndicator(DrawContext instance, TextRenderer textRenderer, String text, int x, int y, int color, Operation<Integer> original) {
+    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)I"))
+    public int drawAFLIndicator(GuiGraphics instance, Font font, String text, int x, int y, int color, Operation<Integer> original) {
         final int modsSize = AsmFabricLoader.getLoader().getAflMods().size();
-        instance.drawTextWithShadow(textRenderer, "AsmFabricLoader: " + modsSize + " mod" + (modsSize != 1 ? "s" : "") + " loaded", x, y - 10, color);
+        instance.drawString(font, "AsmFabricLoader: " + modsSize + " mod" + (modsSize != 1 ? "s" : "") + " loaded", x, y - 10, color);
 
-        return original.call(instance, textRenderer, text, x, y, color);
+        return original.call(instance, font, text, x, y, color);
     }
 
 }
