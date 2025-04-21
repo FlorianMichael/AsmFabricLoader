@@ -23,7 +23,6 @@ import de.florianmichael.asmfabricloader.loader.classloading.AFLConstants;
 import de.florianmichael.asmfabricloader.loader.feature.JarBooter;
 import de.florianmichael.asmfabricloader.loader.feature.Unmixer;
 import de.florianmichael.asmfabricloader.loader.feature.ClassTransform;
-import de.florianmichael.asmfabricloader.api.MappingsResolver;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
@@ -37,7 +36,6 @@ public class AsmFabricLoader {
     private final ClassTransform classTransform;
     private final Unmixer unmixer;
     private final JarBooter jarBooter;
-    private final MappingsResolver mappingsResolver;
 
     public static void install() {
         if (loader != null) {
@@ -56,7 +54,6 @@ public class AsmFabricLoader {
         classTransform = new ClassTransform(mods);
         unmixer = new Unmixer(mods);
         jarBooter = new JarBooter(mods);
-        mappingsResolver = new MappingsResolver();
     }
 
     /**
@@ -88,11 +85,6 @@ public class AsmFabricLoader {
 
     public JarBooter getJarBooter() {
         return jarBooter;
-    }
-
-    @Deprecated
-    public MappingsResolver getMappingsResolver() {
-        return mappingsResolver;
     }
 
     public static AsmFabricLoader getLoader() {
