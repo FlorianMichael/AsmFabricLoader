@@ -6,37 +6,6 @@ plugins {
     id("fabric-loom") version "1.10-SNAPSHOT"
 }
 
-base {
-    archivesName.set(property("maven_name") as String)
-}
-
-repositories {
-    mavenCentral()
-    maven("https://maven.lenni0451.net/everything")
-    maven("https://maven.parchmentmc.org")
-}
-
-val jij: Configuration by configurations.creating
-
-dependencies {
-    jij("net.fabricmc:tiny-mappings-parser:0.3.0+build.17")
-    jij("net.lenni0451:Reflect:1.4.0")
-    jij("net.lenni0451.classtransform:core:1.14.1") {
-        exclude(group = "org.ow2.asm", module = "asm")
-        exclude(group = "org.ow2.asm", module = "asm-commons")
-        exclude(group = "org.ow2.asm", module = "asm-tree")
-    }
-
-    // Fabric's jar in jar system doesn't support transitive dependencies, so we have to manually add them
-    configurations["jij"].dependencies.forEach { dependency ->
-        val compileDep = dependencies.create(dependency.toString()) as ExternalModuleDependency
-        compileDep.isTransitive = false
-        dependencies.add("compileOnlyApi", compileDep)
-        dependencies.add("implementation", compileDep)
-        dependencies.add("include", compileDep)
-    }
-}
-
 allprojects {
     apply(plugin = "fabric-loom")
 
@@ -74,6 +43,37 @@ allprojects {
 
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+    }
+}
+
+base {
+    archivesName.set(property("maven_name") as String)
+}
+
+val jij: Configuration by configurations.creating
+
+repositories {
+    mavenCentral()
+    maven("https://maven.lenni0451.net/everything")
+    maven("https://maven.parchmentmc.org")
+}
+
+dependencies {
+    jij("net.fabricmc:tiny-mappings-parser:0.3.0+build.17")
+    jij("net.lenni0451:Reflect:1.4.0")
+    jij("net.lenni0451.classtransform:core:1.14.1") {
+        exclude(group = "org.ow2.asm", module = "asm")
+        exclude(group = "org.ow2.asm", module = "asm-commons")
+        exclude(group = "org.ow2.asm", module = "asm-tree")
+    }
+
+    // Fabric's jar in jar system doesn't support transitive dependencies, so we have to manually add them
+    configurations["jij"].dependencies.forEach { dependency ->
+        val compileDep = dependencies.create(dependency.toString()) as ExternalModuleDependency
+        compileDep.isTransitive = false
+        dependencies.add("compileOnlyApi", compileDep)
+        dependencies.add("implementation", compileDep)
+        dependencies.add("include", compileDep)
     }
 }
 
