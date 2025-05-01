@@ -32,7 +32,7 @@
   "custom": {
     "afl:classtransform": "testmod.classtransform.json",
     "afl:unmixer": [
-      "de.florianmichael.asmfabricloader.test.mixin.UnmixerTest"
+      "de.florianmichael.asmfabricloader.testmod.mixin.UnmixerTest"
     ]
   },
   "depends": {
