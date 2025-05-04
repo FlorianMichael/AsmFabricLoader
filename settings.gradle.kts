@@ -12,5 +12,5 @@ plugins {
 
 rootProject.name = "AsmFabricLoader"
 
-include("TestMod")
+include("asmfabricloader-test-mod")
 
