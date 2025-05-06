@@ -1,22 +1,23 @@
-# gradle
+# Gradle
 
 .gradle/
 build/
 out/
 classes/
+.kotlin/
 
-# eclipse
+# Eclipse
 
 *.launch
 
-# idea
+# Idea
 
 .idea/
 *.iml
 *.ipr
 *.iws
 
-# vscode
+# VSCode
 
 .settings/
 .vscode/
@@ -24,17 +25,10 @@ bin/
 .classpath
 .project
 
-# macos
+# macOS
 
 *.DS_Store
 
-# fabric
+# Misc
 
 run/
-
-# java
-
-hs_err_*.log
-replay_*.log
-*.hprof
-*.jfr

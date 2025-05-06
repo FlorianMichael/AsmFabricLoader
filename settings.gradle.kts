@@ -4,6 +4,11 @@ pluginManagement {
 		gradlePluginPortal()
         maven("https://maven.fabricmc.net/")
 	}
+
+    plugins {
+        id("fabric-loom") version "1.10-SNAPSHOT"
+        id("de.florianmichael.baseproject.BaseProject") version "0.0.3"
+    }
 }
 
 plugins {
