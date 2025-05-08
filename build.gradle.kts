@@ -9,7 +9,7 @@ allprojects {
 
     setupProject()
     setupFabric()
-    setupPublishing(listOf(DeveloperInfo("FlorianMichael", "EnZaXD", "florian.michael07@gmail.com")))
+    setupPublishing()
 
 }
 
@@ -29,7 +29,7 @@ dependencies {
         exclude(group = "org.ow2.asm", module = "asm-tree")
     }
 
-    processJijDependencies()
+    includeTransitiveJijDependencies()
 }
 
 tasks {
