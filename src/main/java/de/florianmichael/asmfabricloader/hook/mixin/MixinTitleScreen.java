@@ -35,12 +35,12 @@ public class MixinTitleScreen extends Screen {
         super(title);
     }
 
-    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)I"))
-    public int drawAFLIndicator(GuiGraphics instance, Font font, String text, int x, int y, int color, Operation<Integer> original) {
+    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)V"))
+    public void drawAFLIndicator(GuiGraphics instance, Font font, String text, int x, int y, int color, Operation<Integer> original) {
         final int modsSize = AsmFabricLoader.getLoader().getAflMods().size();
         instance.drawString(font, "AsmFabricLoader: " + modsSize + " mod" + (modsSize != 1 ? "s" : "") + " loaded", x, y - 10, color);
 
-        return original.call(instance, font, text, x, y, color);
+        original.call(instance, font, text, x, y, color);
     }
 
 }
