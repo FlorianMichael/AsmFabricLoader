@@ -9,9 +9,10 @@ allprojects {
 
     setupProject()
     setupFabric()
-    setupPublishing()
 
 }
+
+setupPublishing()
 
 val jij = configureJij()
 
