@@ -33,7 +33,7 @@ It also provides the same functionality as [MixinSquared](https://github.com/Baw
 
 ## Contact
 If you encounter any issues, please report them on the [issue tracker](https://github.com/FlorianMichael/AsmFabricLoader/issues).  
-If you just want to talk or need help with AsmFabricLoader feel free to join my [Discord](https://discord.gg/BwWhCHUKDf).
+If you just want to talk or need help with AsmFabricLoader feel free to join my [Discord](https://florianmichael.de/discord).
 
 ## How to add this to your project
 ### Gradle/Maven
