@@ -17,12 +17,16 @@
 
 package de.florianmichael.asmfabricloader.loader.feature.classtransform;
 
-import de.florianmichael.asmfabricloader.loader.classloading.MixinClassLoaderConstants;
 import de.florianmichael.asmfabricloader.loader.classloading.AFLConstants;
+import de.florianmichael.asmfabricloader.loader.classloading.MixinClassLoaderConstants;
+import java.util.ArrayList;
+import java.util.List;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.impl.launch.knot.Knot;
 import net.lenni0451.classtransform.InjectionCallback;
 import net.lenni0451.classtransform.TransformerManager;
+import net.lenni0451.classtransform.mappings.AMapper;
 import net.lenni0451.classtransform.utils.tree.BasicClassProvider;
 import net.lenni0451.classtransform.utils.tree.IClassProvider;
 import net.lenni0451.reflect.ClassLoaders;
@@ -35,7 +39,7 @@ import org.objectweb.asm.tree.ClassNode;
  */
 public class MixinTransformerBootstrap {
 
-    private final static TransformerManager TRANSFORMER;
+    private static final List<TransformerManager> TRANSFORMER = new ArrayList<>();
 
     static {
         // We use the knot class loader as it is the only one that is able to load the classes we need
@@ -48,29 +52,40 @@ public class MixinTransformerBootstrap {
             }
         }
 
-        TRANSFORMER = new TransformerManager(classProvider, MixinClassLoaderConstants.MAPPINGS);
-        for (String transformer : MixinClassLoaderConstants.MIXING_TRANSFORMERS) {
-            TRANSFORMER.addTransformer(transformer);
+        for (final ModContainer mod : FabricLoader.getInstance().getAllMods()) {
+            final List<String> mixingTransformers = MixinClassLoaderConstants.MIXING_TRANSFORMERS.get(mod);
+            if (mixingTransformers == null) {
+                continue;
+            }
+
+            final AMapper mapper = MixinClassLoaderConstants.getMapper(mod);
+            final TransformerManager manager = new TransformerManager(classProvider, mapper);
+            for (final String transformer : mixingTransformers) {
+                manager.addTransformer(transformer);
+            }
+            TRANSFORMER.add(manager);
         }
         MixinClassLoaderConstants.MIXING_TRANSFORMERS.clear();
     }
 
     /*
-    ! THIS METHOD IS CALLED BY RAW ASM - DO NOT CHANGE THE SIGNATURE NOR MOVE THIS METHOD !
+    ! THIS METHOD IS CALLED BY RAW BYTECODE - DO NOT CHANGE THE SIGNATURE NOR MOVE THIS METHOD !
      */
 
     public static ClassNode transform(final String mixinClassName, final ClassNode mixin) {
-        final var writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        final ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         mixin.accept(writer);
 
-        final var newBytes = TRANSFORMER.transform(mixinClassName, writer.toByteArray());
-        if (newBytes == null) {
-            return mixin;
+        byte[] current = writer.toByteArray();
+        for (final TransformerManager manager : TRANSFORMER) {
+            final byte[] transformed = manager.transform(mixinClassName, current);
+            if (transformed != null) {
+                current = transformed;
+            }
         }
 
-        final var classNode = new ClassNode();
-        final var classReader = new ClassReader(newBytes);
-
+        final ClassNode classNode = new ClassNode();
+        final ClassReader classReader = new ClassReader(current);
         classReader.accept(classNode, 0);
         return classNode;
     }

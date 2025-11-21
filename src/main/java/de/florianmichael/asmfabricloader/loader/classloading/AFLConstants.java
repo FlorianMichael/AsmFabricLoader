@@ -17,11 +17,8 @@
 
 package de.florianmichael.asmfabricloader.loader.classloading;
 
-import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.InputStream;
 
 /**
  * To prevent issues with multiple class loaders, we use this class to store fields that are shared between the class loaders.
@@ -32,11 +29,6 @@ public class AFLConstants {
 
     public static boolean isDebugEnabled() {
         return Boolean.parseBoolean(System.getProperty("asmfabricloader.debug", "false"));
-    }
-
-    public static InputStream getMappingsFile() {
-        final boolean production = !FabricLoader.getInstance().isDevelopmentEnvironment();
-        return AFLConstants.class.getResourceAsStream(production ? "/afl_mappings.tiny" : "/mappings/mappings.tiny");
     }
 
 }

@@ -17,31 +17,57 @@
 
 package de.florianmichael.asmfabricloader.loader.classloading;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.lenni0451.classtransform.mappings.AMapper;
 import net.lenni0451.classtransform.mappings.MapperConfig;
 import net.lenni0451.classtransform.mappings.impl.TinyV2Mapper;
 import net.lenni0451.classtransform.mappings.impl.VoidMapper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MixinClassLoaderConstants {
 
     // We can't use AFLConstants here, because we don't have the system class loader libraries on the class path.
-    public static final List<String> MIXING_TRANSFORMERS = new ArrayList<>();
+    public static final Map<ModContainer, List<String>> MIXING_TRANSFORMERS = new ConcurrentHashMap<>();
 
-    public static AMapper MAPPINGS;
+    private static final Map<ModContainer, AMapper> MOD_MAPPINGS = new ConcurrentHashMap<>();
 
-    static {
-        // We have to map intermediary <-> named in production environment so our injections work
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            // For dev environments, we use the void mapper
-            MAPPINGS = new VoidMapper();
-        } else {
-            // If we are in prod, we copy the mappings from the jar to a temp file and use that
-            MAPPINGS = new TinyV2Mapper(MapperConfig.create().fillSuperMappings(true), AFLConstants.getMappingsFile(), "named", "intermediary");
-        }
+    public static AMapper getMapper(final ModContainer mod) {
+        return MOD_MAPPINGS.computeIfAbsent(mod, id -> {
+            if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+                return new VoidMapper(); // In dev environment we don't want to remap
+            }
+
+            final Optional<Path> mappingsPath = mod.findPath("/afl_mappings.tiny");
+            if (mappingsPath.isEmpty()) {
+                return new VoidMapper();
+            }
+
+            final Path sourcePath = mappingsPath.get();
+            try {
+                final Path tempFile = Files.createTempFile("afl_mappings_" + mod.getMetadata().getId() + "_", ".tiny");
+                try (final InputStream in = Files.newInputStream(sourcePath)) {
+                    Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
+                }
+                tempFile.toFile().deleteOnExit();
+
+                return new TinyV2Mapper(MapperConfig.create().fillSuperMappings(true).remapTransformer(true), tempFile.toFile(), "named", "intermediary");
+            } catch (final IOException e) {
+                AFLConstants.LOGGER.error("I/O error while loading afl_mappings.tiny for mod {} from {}", mod.getMetadata().getId(), sourcePath, e);
+                return new VoidMapper();
+            } catch (final Throwable t) {
+                AFLConstants.LOGGER.error("Failed to load afl_mappings.tiny for mod {} from {}", mod.getMetadata().getId(), sourcePath, t);
+                return new VoidMapper();
+            }
+        });
     }
 
 }

@@ -24,30 +24,33 @@ import de.florianmichael.asmfabricloader.loader.AFLFeature;
 import de.florianmichael.asmfabricloader.loader.classloading.AFLConstants;
 import de.florianmichael.asmfabricloader.loader.classloading.MixinClassLoaderConstants;
 import de.florianmichael.asmfabricloader.loader.feature.classtransform.ClassTransformJson;
+import java.io.IOException;
+import java.lang.instrument.Instrumentation;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
 import net.lenni0451.classtransform.TransformerManager;
 import net.lenni0451.classtransform.utils.tree.BasicClassProvider;
 import net.lenni0451.reflect.Agents;
 
-import java.io.IOException;
-import java.lang.instrument.Instrumentation;
-import java.nio.file.Files;
-import java.util.*;
-
 public final class ClassTransform {
     private final Gson GSON = new Gson();
 
     private final Map<ModContainer, List<ClassTransformJson>> modsToTransformerJsons = new HashMap<>();
-    private final TransformerManager javaTransformerManager;
+    private final Map<ModContainer, TransformerManager> modsToJavaTransformers = new HashMap<>();
 
     public ClassTransform(final Collection<ModContainer> modContainers) {
         AFLFeature.applyForMods(modContainers, "classtransform", (modContainer, value) -> {
             try {
-                for (CustomValue transformerValue : value.getAsArray()) {
+                for (final CustomValue transformerValue : value.getAsArray()) {
                     parseTransformer(modContainer, transformerValue.getAsString());
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 parseTransformer(modContainer, value.getAsString());
             }
         });
@@ -55,48 +58,63 @@ public final class ClassTransform {
             AFLConstants.LOGGER.info("Loaded {} transformer config{}", modsToTransformerJsons.size(), modsToTransformerJsons.size() != 1 ? "s" : "");
         }
 
-        javaTransformerManager = new TransformerManager(new BasicClassProvider(), MixinClassLoaderConstants.MAPPINGS);
-        for (List<ClassTransformJson> value : modsToTransformerJsons.values()) {
-            for (ClassTransformJson config : value) {
-                for (String transformer : config.javaTransformers()) {
-                    javaTransformerManager.addTransformer(config.packageName() + "." + transformer);
+        for (final Map.Entry<ModContainer, List<ClassTransformJson>> entry : modsToTransformerJsons.entrySet()) {
+            final ModContainer mod = entry.getKey();
+            final TransformerManager manager = new TransformerManager(new BasicClassProvider(), MixinClassLoaderConstants.getMapper(mod));
+            for (final ClassTransformJson config : entry.getValue()) {
+                for (final String transformer : config.javaTransformers()) {
+                    manager.addTransformer(config.packageName() + "." + transformer);
                 }
             }
+            modsToJavaTransformers.put(mod, manager);
         }
 
         try {
             final Instrumentation instrumentation = Agents.getInstrumentation();
             EarlyRiser.invokeEntrypoints(InstrumentationEntrypoint.getEntrypointName(), InstrumentationEntrypoint.class,
-                    entrypoint -> entrypoint.onGetInstrumentation(instrumentation));
+                entrypoint -> entrypoint.onGetInstrumentation(instrumentation));
 
-            javaTransformerManager.hookInstrumentation(instrumentation);
+            for (final TransformerManager manager : modsToJavaTransformers.values()) {
+                manager.hookInstrumentation(instrumentation);
+            }
             AFLConstants.LOGGER.error("KnotClassLoader, you fool! You fell victim to one of the classic blunders!");
         } catch (Exception e) {
             AFLConstants.LOGGER.error("Failed to hook instrumentation", e);
         }
     }
 
-    private void parseTransformer(final ModContainer provider, final String filePath) {
+    private void parseTransformer(final ModContainer mod, final String filePath) {
         if (!filePath.endsWith(".json")) {
-            AFLConstants.LOGGER.error("Transformer config file {} from {} is not a json file", filePath, provider.getMetadata().getId());
+            AFLConstants.LOGGER.error("Transformer config file {} from {} is not a json file", filePath, mod.getMetadata().getId());
             return;
         }
 
-        provider.findPath(filePath).ifPresentOrElse(path -> {
+        mod.findPath(filePath).ifPresentOrElse(path -> {
             try {
                 final String content = Files.readString(path);
                 final ClassTransformJson config = GSON.fromJson(content, ClassTransformJson.class);
-                modsToTransformerJsons.computeIfAbsent(provider, modContainer -> new ArrayList<>()).add(config);
+                modsToTransformerJsons.computeIfAbsent(mod, modContainer -> new ArrayList<>()).add(config);
 
-                for (String mixinTransformer : config.mixinTransformers()) {
-                    MixinClassLoaderConstants.MIXING_TRANSFORMERS.add(config.packageName() + "." + mixinTransformer);
+                final List<String> mixinTransformers = new ArrayList<>();
+                for (final String mixinTransformer : config.mixinTransformers()) {
+                    mixinTransformers.add(config.packageName() + "." + mixinTransformer);
                 }
+                MixinClassLoaderConstants.MIXING_TRANSFORMERS.put(mod, mixinTransformers);
             } catch (IOException e) {
-                AFLConstants.LOGGER.error("Failed to read transformer config file {} from {}", filePath, provider.getMetadata().getId(), e);
+                AFLConstants.LOGGER.error("Failed to read transformer config file {} from {}", filePath, mod.getMetadata().getId(), e);
             }
-        }, () -> AFLConstants.LOGGER.error("Transformer config file {} from {} does not exist", filePath, provider.getMetadata().getId()));
+        }, () -> AFLConstants.LOGGER.error("Transformer config file {} from {} does not exist", filePath, mod.getMetadata().getId()));
     }
 
+    /**
+     * Returns true if the mod has java transformers
+     *
+     * @param mod The mod to check
+     * @return If the mod has java transformers
+     */
+    public boolean hasJavaTransformers(final ModContainer mod) {
+        return modsToJavaTransformers.containsKey(mod);
+    }
 
     /**
      * Registers a java transformer
@@ -104,9 +122,14 @@ public final class ClassTransform {
      * @param folder The folder of the transformer
      * @param paths  The paths to the transformer
      */
-    public void registerJavaTransformer(final String folder, final String... paths) {
-        for (String path : paths) {
-            javaTransformerManager.addTransformer(folder + "." + path);
+    public void registerJavaTransformer(final ModContainer mod, final String folder, final String... paths) throws IllegalArgumentException {
+        final TransformerManager transformerManager = modsToJavaTransformers.get(mod);
+        if (transformerManager == null) {
+            throw new IllegalArgumentException("Mod " + mod.getMetadata().getId() + " is not transforming classes");
+        }
+
+        for (final String path : paths) {
+            transformerManager.addTransformer(folder + "." + path);
         }
     }
 
@@ -115,8 +138,13 @@ public final class ClassTransform {
      *
      * @param path The path to the transformer
      */
-    public void registerJavaTransformer(final String path) {
-        javaTransformerManager.addTransformer(path);
+    public void registerJavaTransformer(final ModContainer mod, final String path) throws IllegalArgumentException {
+        final TransformerManager transformerManager = modsToJavaTransformers.get(mod);
+        if (transformerManager == null) {
+            throw new IllegalArgumentException("Mod " + mod.getMetadata().getId() + " is not transforming classes");
+        }
+
+        transformerManager.addTransformer(path);
     }
 
     /**
@@ -135,10 +163,11 @@ public final class ClassTransform {
      * @param mod The mod to get the config for
      * @return The transformer config for the mod or null if the mod is not transforming classes
      */
-    public List<ClassTransformJson> getTransformers(final ModContainer mod) {
+    public List<ClassTransformJson> getTransformers(final ModContainer mod) throws IllegalArgumentException {
         if (!modsToTransformerJsons.containsKey(mod)) {
-            return null;
+            throw new IllegalArgumentException("Mod " + mod.getMetadata().getId() + " is not transforming classes");
         }
+
         return modsToTransformerJsons.get(mod);
     }
 
@@ -150,12 +179,19 @@ public final class ClassTransform {
      * @param mixin If mixin transformers should be counted
      * @return The amount of transformers for the mod
      */
-    public int getTransformerCount(final ModContainer mod, final boolean java, final boolean mixin) {
-        if (!modsToTransformerJsons.containsKey(mod)) return 0;
+    public int getTransformerCount(final ModContainer mod, final boolean java, final boolean mixin) throws IllegalArgumentException {
+        if (!modsToTransformerJsons.containsKey(mod)) {
+            throw new IllegalArgumentException("Mod " + mod.getMetadata().getId() + " is not transforming classes");
+        }
+
         int sum = 0;
         for (ClassTransformJson classTransformJson : modsToTransformerJsons.get(mod)) {
-            if (java) sum += classTransformJson.javaTransformers().size();
-            if (mixin) sum += classTransformJson.mixinTransformers().size();
+            if (java) {
+                sum += classTransformJson.javaTransformers().size();
+            }
+            if (mixin) {
+                sum += classTransformJson.mixinTransformers().size();
+            }
         }
         return sum;
     }
@@ -180,17 +216,21 @@ public final class ClassTransform {
      */
     public List<String> getAllTransformers(final boolean java, final boolean mixin) {
         final List<String> transformers = new ArrayList<>();
-        for (List<ClassTransformJson> value : modsToTransformerJsons.values()) {
-            for (ClassTransformJson classTransformJson : value) {
-                if (java) transformers.addAll(classTransformJson.javaTransformers());
-                if (mixin) transformers.addAll(classTransformJson.mixinTransformers());
+        for (final List<ClassTransformJson> value : modsToTransformerJsons.values()) {
+            for (final ClassTransformJson classTransformJson : value) {
+                if (java) {
+                    transformers.addAll(classTransformJson.javaTransformers());
+                }
+                if (mixin) {
+                    transformers.addAll(classTransformJson.mixinTransformers());
+                }
             }
         }
         return transformers;
     }
 
-    public TransformerManager getJavaTransformerManager() {
-        return javaTransformerManager;
+    public TransformerManager getJavaTransformerManager(final ModContainer mod) {
+        return modsToJavaTransformers.get(mod);
     }
 
 }

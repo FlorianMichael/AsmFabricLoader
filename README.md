@@ -15,6 +15,7 @@ A series of cursed Fabric hacks and utilities which break everything.
     * [Jar Booter](#jar-booter)
     * [Early riser](#early-riser)
     * [Class Transform](#class-transform)
+      * [Setting up mappings](#setting-up-mappings)
       * [Transformer config](#transformer-config)
       * [Example transformer](#example-transformer)
       * [Registering transformers](#registering-transformers)
@@ -122,6 +123,61 @@ Utility to create and invoke mod entrypoints before Fabric has finished loading 
 ### Class Transform
 AsmFabricLoader bootstraps the [ClassTransform](https://www.github.com/Lenni0451/ClassTransform) library which allows
 you to transform classes directly without using Mixins.
+
+#### Setting up mappings
+AsmFabricLoader uses tiny mappings internally to remap Minecraft classes for transformers.
+
+AsmFabricLoader itself **does not** ship these mappings. Your mod has to provide the Tiny mappings file so that AFL can load it at runtime.
+
+AsmFabricLoader looks for a resource named:
+
+- `/afl_mappings.tiny`
+
+Example for **Gradle Kotlin DSL** (`build.gradle.kts`) in your mod project:
+
+```kotlin
+tasks {
+    jar {
+        dependsOn(configurations["mappings"])
+        val mappingsJar = configurations["mappings"].resolvedConfiguration.resolvedArtifacts.firstOrNull { it.name.contains("mappings") }?.file
+
+        if (mappingsJar != null && mappingsJar.exists()) {
+            val mappingsFile = zipTree(mappingsJar).matching {
+                include("mappings/mappings.tiny")
+            }.singleFile
+
+            from(mappingsFile) {
+                rename { "afl_mappings.tiny" }
+            }
+        }
+    }
+}
+```
+
+Example for **Gradle Groovy DSL** (`build.gradle`) in your mod project:
+
+```groovy
+tasks {
+    jar {
+        dependsOn(configurations.mappings)
+        def mappingsJar = configurations.mappings
+            .resolvedConfiguration
+            .resolvedArtifacts
+            .find { it.name.contains("mappings") }
+            ?.file
+
+        if (mappingsJar != null && mappingsJar.exists()) {
+            def mappingsFile = zipTree(mappingsJar).matching {
+                include "mappings/mappings.tiny"
+            }.singleFile
+
+            from(mappingsFile) {
+                rename { "afl_mappings.tiny" }
+            }
+        }
+    }
+}
+```
 
 #### Transformer config
 You just have to create a json file called `<modid>.classtransform.json` in your resources folder and add the following
