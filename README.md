@@ -139,7 +139,9 @@ Example for **Gradle Kotlin DSL** (`build.gradle.kts`) in your mod project:
 tasks {
     jar {
         dependsOn(configurations["mappings"])
-        val mappingsJar = configurations["mappings"].resolvedConfiguration.resolvedArtifacts.firstOrNull { it.name.contains("mappings") }?.file
+        val mappingsJar = configurations["mappings"].resolvedConfiguration.resolvedArtifacts.firstOrNull { 
+            it.name.contains("mappings") || it.name.contains("yarn")
+        }?.file
 
         if (mappingsJar != null && mappingsJar.exists()) {
             val mappingsFile = zipTree(mappingsJar).matching {
@@ -163,7 +165,7 @@ tasks {
         def mappingsJar = configurations.mappings
             .resolvedConfiguration
             .resolvedArtifacts
-            .find { it.name.contains("mappings") }
+            .find { it.name.contains("mappings") || it.name.contains("yarn") }
             ?.file
 
         if (mappingsJar != null && mappingsJar.exists()) {
