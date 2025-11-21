@@ -26,8 +26,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import de.florianmichael.asmfabricloader.loader.AFLFeature;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.CustomValue;
 import net.lenni0451.classtransform.mappings.AMapper;
 import net.lenni0451.classtransform.mappings.MapperConfig;
 import net.lenni0451.classtransform.mappings.impl.TinyV2Mapper;
@@ -40,13 +42,15 @@ public class MixinClassLoaderConstants {
 
     private static final Map<ModContainer, AMapper> MOD_MAPPINGS = new ConcurrentHashMap<>();
 
+    private static final String DEFAULT_MAPPINGS_PATH = "/afl_mappings.tiny";
+
     public static AMapper getMapper(final ModContainer mod) {
         return MOD_MAPPINGS.computeIfAbsent(mod, id -> {
             if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
                 return new VoidMapper(); // In dev environment we don't want to remap
             }
 
-            final Optional<Path> mappingsPath = mod.findPath("/afl_mappings.tiny");
+            final Optional<Path> mappingsPath = mod.findPath(getConfiguredMappingsPath(mod));
             if (mappingsPath.isEmpty()) {
                 return new VoidMapper();
             }
@@ -61,13 +65,28 @@ public class MixinClassLoaderConstants {
 
                 return new TinyV2Mapper(MapperConfig.create().fillSuperMappings(true).remapTransformer(true), tempFile.toFile(), "named", "intermediary");
             } catch (final IOException e) {
-                AFLConstants.LOGGER.error("I/O error while loading afl_mappings.tiny for mod {} from {}", mod.getMetadata().getId(), sourcePath, e);
+                AFLConstants.LOGGER.error("I/O error while loading afl mappings for mod {} from {}", mod.getMetadata().getId(), sourcePath, e);
                 return new VoidMapper();
             } catch (final Throwable t) {
-                AFLConstants.LOGGER.error("Failed to load afl_mappings.tiny for mod {} from {}", mod.getMetadata().getId(), sourcePath, t);
+                AFLConstants.LOGGER.error("Failed to load afl mappings for mod {} from {}", mod.getMetadata().getId(), sourcePath, t);
                 return new VoidMapper();
             }
         });
+    }
+
+    private static String getConfiguredMappingsPath(final ModContainer mod) {
+        final CustomValue value = AFLFeature.getAflFeature(mod, "mappings_path");
+        if (value == null) {
+            return DEFAULT_MAPPINGS_PATH;
+        }
+
+        try {
+            final String path = value.getAsString().trim();
+            return path.startsWith("/") ? path : "/" + path;
+        } catch (final Exception e) {
+            AFLConstants.LOGGER.warn("Invalid custom.asmfabricloader:mappings on mod {}: {}", mod.getMetadata().getId(), e.getMessage());
+            return DEFAULT_MAPPINGS_PATH;
+        }
     }
 
 }
