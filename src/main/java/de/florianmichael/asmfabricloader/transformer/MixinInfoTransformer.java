@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package de.florianmichael.asmfabricloader.hook.transformer;
+package de.florianmichael.asmfabricloader.transformer;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.impl.launch.knot.Knot;

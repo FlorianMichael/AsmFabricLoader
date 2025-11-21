@@ -1,5 +1,5 @@
 {
-  "package": "de.florianmichael.asmfabricloader.hook.transformer",
+  "package": "de.florianmichael.asmfabricloader.transformer",
   "java": [
     "MixinInfoTransformer"
   ],

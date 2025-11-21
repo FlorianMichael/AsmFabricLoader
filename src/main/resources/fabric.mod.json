@@ -22,9 +22,6 @@
   "license": "Apache-2.0",
   "icon": "assets/asmfabricloader/icon.png",
   "environment": "*",
-  "mixins": [
-    "asmfabricloader.mixins.json"
-  ],
   "custom": {
     "afl:classtransform": "asmfabricloader.classtransform.json",
     "modmenu": {
