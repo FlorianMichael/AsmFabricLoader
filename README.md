@@ -11,7 +11,6 @@ A series of cursed Fabric hacks and utilities which break everything.
   * [How to use](#how-to-use)
     * [PreLaunch Entry Points](#prelaunch-entry-points)
     * [Get a Java instrumentation](#get-a-java-instrumentation)
-    * [Mappings API](#mappings-api)
     * [Unmixer](#unmixer)
     * [Jar Booter](#jar-booter)
     * [Early riser](#early-riser)
@@ -62,23 +61,6 @@ AsmFabricLoader allows you to get a Java instrumentation instance which you can 
 
 You can use the `InstrumentationEntrypoint` to get the instrumentation instance. The name of the entry point is
 `afl:instrumentation`.
-
-### Mappings API
-FabricLoader 0.15.0+ removed the `tiny-mappings-parser` library and therefore most of the mappings API. AsmFabricLoader
-re-adds the mappings API and allows you to use it in your mods.
-
-```java
-final MappingsResolver mappings = AsmFabricLoader.getLoader().getMappingsResolver();
-
-if (mappings.areMappingsLoaded()) { // This will be true in production environments
-    // Now you get the mapping path you want to translate to, for example:
-    final String className=mappings.named().getClassName("net/minecraft/class_7833");
-    // this field should now be net/minecraft/util/math/RotationAxis
-
-    // You can also use the getClassDef method to get a ClassDef object from the tiny-mappings-parser library
-    final ClassDef classDef = mappings.named().getClassDef("net/minecraft/class_7833");
-}
-```
 
 ### Unmixer
 AsmFabricLoader adds a new API which allows you to unload Mixin classes meaning they aren't injected anymore. This is
