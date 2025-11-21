@@ -17,6 +17,7 @@
 
 package de.florianmichael.asmfabricloader.loader.classloading;
 
+import de.florianmichael.asmfabricloader.loader.AFLFeature;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import de.florianmichael.asmfabricloader.loader.AFLFeature;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
@@ -55,20 +55,22 @@ public class MixinClassLoaderConstants {
                 return new VoidMapper();
             }
 
+            final String modId = mod.getMetadata().getId();
             final Path sourcePath = mappingsPath.get();
             try {
-                final Path tempFile = Files.createTempFile("afl_mappings_" + mod.getMetadata().getId() + "_", ".tiny");
+                final Path tempFile = Files.createTempFile("afl_mappings_" + modId + "_", ".tiny");
                 try (final InputStream in = Files.newInputStream(sourcePath)) {
                     Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
                 }
                 tempFile.toFile().deleteOnExit();
 
+                AFLConstants.LOGGER.info("Loaded AFL mappings for mod {} from {}", modId, sourcePath);
                 return new TinyV2Mapper(MapperConfig.create().fillSuperMappings(true).remapTransformer(true), tempFile.toFile(), "named", "intermediary");
             } catch (final IOException e) {
-                AFLConstants.LOGGER.error("I/O error while loading afl mappings for mod {} from {}", mod.getMetadata().getId(), sourcePath, e);
+                AFLConstants.LOGGER.error("I/O error while loading afl mappings for mod {} from {}", modId, sourcePath, e);
                 return new VoidMapper();
             } catch (final Throwable t) {
-                AFLConstants.LOGGER.error("Failed to load afl mappings for mod {} from {}", mod.getMetadata().getId(), sourcePath, t);
+                AFLConstants.LOGGER.error("Failed to load afl mappings for mod {} from {}", modId, sourcePath, t);
                 return new VoidMapper();
             }
         });
