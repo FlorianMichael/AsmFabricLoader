@@ -21,13 +21,21 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public record ClassTransformJson(
-        @SerializedName("package")
-        String packageName,
+public final class ClassTransformJson {
 
-        @SerializedName("java")
-        List<String> javaTransformers,
+    @SerializedName("package")
+    public final String packageName;
 
-        @SerializedName("mixins")
-        List<String> mixinTransformers
-) {}
+    @SerializedName("java")
+    public final List<String> javaTransformers;
+
+    @SerializedName("mixins")
+    public final List<String> mixinTransformers;
+
+    public ClassTransformJson(final String packageName, final List<String> javaTransformers, final List<String> mixinTransformers) {
+        this.packageName = packageName;
+        this.javaTransformers = javaTransformers;
+        this.mixinTransformers = mixinTransformers;
+    }
+
+}

@@ -25,7 +25,7 @@ public class AFLMixinPlugin extends DummyMixinPlugin {
 
     @Override
     public void onLoad(String mixinPackage) {
-        for (var prePreLaunch : FabricLoader.getInstance().getEntrypoints(PrePreLaunchEntrypoint.getEntrypointName(), PrePreLaunchEntrypoint.class)) {
+        for (final PrePreLaunchEntrypoint prePreLaunch : FabricLoader.getInstance().getEntrypoints(PrePreLaunchEntrypoint.getEntrypointName(), PrePreLaunchEntrypoint.class)) {
             prePreLaunch.onMixinPluginLaunch();
         }
     }

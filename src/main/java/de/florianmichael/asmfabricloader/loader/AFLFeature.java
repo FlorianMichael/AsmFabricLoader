@@ -20,6 +20,7 @@ package de.florianmichael.asmfabricloader.loader;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 
 import java.util.Collection;
 import java.util.function.BiConsumer;
@@ -53,8 +54,8 @@ public class AFLFeature {
      * @return True if the mod has the feature
      */
     public static CustomValue getAflFeature(final ModContainer modContainer, final String name) {
-        final var env = FabricLoader.getInstance().getEnvironmentType().name().toLowerCase();
-        final var meta = modContainer.getMetadata();
+        final String env = FabricLoader.getInstance().getEnvironmentType().name().toLowerCase();
+        final ModMetadata meta = modContainer.getMetadata();
 
         if (meta.containsCustomValue("afl:" + name)) {
             return meta.getCustomValue("afl:" + name);

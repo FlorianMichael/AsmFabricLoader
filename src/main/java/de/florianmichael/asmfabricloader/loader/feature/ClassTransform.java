@@ -26,12 +26,15 @@ import de.florianmichael.asmfabricloader.loader.classloading.MixinClassLoaderCon
 import de.florianmichael.asmfabricloader.loader.feature.classtransform.ClassTransformJson;
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
 import net.lenni0451.classtransform.TransformerManager;
@@ -62,8 +65,8 @@ public final class ClassTransform {
             final ModContainer mod = entry.getKey();
             final TransformerManager manager = new TransformerManager(new BasicClassProvider(), MixinClassLoaderConstants.getMapper(mod));
             for (final ClassTransformJson config : entry.getValue()) {
-                for (final String transformer : config.javaTransformers()) {
-                    manager.addTransformer(config.packageName() + "." + transformer);
+                for (final String transformer : config.javaTransformers) {
+                    manager.addTransformer(config.packageName + "." + transformer);
                 }
             }
             modsToJavaTransformers.put(mod, manager);
@@ -89,21 +92,26 @@ public final class ClassTransform {
             return;
         }
 
-        mod.findPath(filePath).ifPresentOrElse(path -> {
-            try {
-                final String content = Files.readString(path);
-                final ClassTransformJson config = GSON.fromJson(content, ClassTransformJson.class);
-                modsToTransformerJsons.computeIfAbsent(mod, modContainer -> new ArrayList<>()).add(config);
+        final Optional<Path> file = mod.findPath(filePath);
+        if (!file.isPresent()) {
+            AFLConstants.LOGGER.error("Transformer config file {} from {} does not exist", filePath, mod.getMetadata().getId());
+            return;
+        }
 
-                final List<String> mixinTransformers = new ArrayList<>();
-                for (final String mixinTransformer : config.mixinTransformers()) {
-                    mixinTransformers.add(config.packageName() + "." + mixinTransformer);
-                }
-                MixinClassLoaderConstants.MIXING_TRANSFORMERS.put(mod, mixinTransformers);
-            } catch (IOException e) {
-                AFLConstants.LOGGER.error("Failed to read transformer config file {} from {}", filePath, mod.getMetadata().getId(), e);
+        final Path path = file.get();
+        try {
+            final String content = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+            final ClassTransformJson config = GSON.fromJson(content, ClassTransformJson.class);
+            modsToTransformerJsons.computeIfAbsent(mod, modContainer -> new ArrayList<>()).add(config);
+
+            final List<String> mixinTransformers = new ArrayList<>();
+            for (final String mixinTransformer : config.mixinTransformers) {
+                mixinTransformers.add(config.packageName + "." + mixinTransformer);
             }
-        }, () -> AFLConstants.LOGGER.error("Transformer config file {} from {} does not exist", filePath, mod.getMetadata().getId()));
+            MixinClassLoaderConstants.MIXING_TRANSFORMERS.put(mod, mixinTransformers);
+        } catch (IOException e) {
+            AFLConstants.LOGGER.error("Failed to read transformer config file {} from {}", filePath, mod.getMetadata().getId(), e);
+        }
     }
 
     /**
@@ -187,10 +195,10 @@ public final class ClassTransform {
         int sum = 0;
         for (ClassTransformJson classTransformJson : modsToTransformerJsons.get(mod)) {
             if (java) {
-                sum += classTransformJson.javaTransformers().size();
+                sum += classTransformJson.javaTransformers.size();
             }
             if (mixin) {
-                sum += classTransformJson.mixinTransformers().size();
+                sum += classTransformJson.mixinTransformers.size();
             }
         }
         return sum;
@@ -219,10 +227,10 @@ public final class ClassTransform {
         for (final List<ClassTransformJson> value : modsToTransformerJsons.values()) {
             for (final ClassTransformJson classTransformJson : value) {
                 if (java) {
-                    transformers.addAll(classTransformJson.javaTransformers());
+                    transformers.addAll(classTransformJson.javaTransformers);
                 }
                 if (mixin) {
-                    transformers.addAll(classTransformJson.mixinTransformers());
+                    transformers.addAll(classTransformJson.mixinTransformers);
                 }
             }
         }

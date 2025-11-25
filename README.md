@@ -11,11 +11,11 @@ A series of cursed Fabric hacks and utilities which break everything.
     * [Jar File](#jar-file)
   * [How to use](#how-to-use)
     * [PreLaunch Entry Points](#prelaunch-entry-points)
-    * [Get a Java instrumentation](#get-a-java-instrumentation)
+    * [Get a Java instrumentation (Requires Java 9+)](#get-a-java-instrumentation-requires-java-9)
     * [Unmixer](#unmixer)
     * [Jar Booter](#jar-booter)
     * [Early riser](#early-riser)
-    * [Class Transform](#class-transform)
+    * [Class Transform (Requires Java 9+)](#class-transform-requires-java-9)
       * [Setting up mappings](#setting-up-mappings)
       * [Transformer config](#transformer-config)
       * [Example transformer](#example-transformer)
@@ -73,7 +73,7 @@ even starts. The name of the entry point is `afl:prePrePreLaunch`.
 
 You can use both just like the `PreLaunchEntrypoint` from FabricMC.
 
-### Get a Java instrumentation
+### Get a Java instrumentation (Requires Java 9+)
 
 AsmFabricLoader allows you to get a Java instrumentation instance which you can use to transform classes directly.
 
@@ -140,7 +140,7 @@ This will load all jar files from the run directory/libs folder to the front of 
 
 Utility to create and invoke mod entrypoints before Fabric has finished loading entrypoints. See the `EarlyRiser` class
 
-### Class Transform
+### Class Transform (Requires Java 9+)
 
 AsmFabricLoader bootstraps the [ClassTransform](https://www.github.com/Lenni0451/ClassTransform) library which allows
 you to transform classes directly without using Mixins.

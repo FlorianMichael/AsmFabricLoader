@@ -51,7 +51,7 @@ public class MixinClassLoaderConstants {
             }
 
             final Optional<Path> mappingsPath = mod.findPath(getConfiguredMappingsPath(mod));
-            if (mappingsPath.isEmpty()) {
+            if (!mappingsPath.isPresent()) {
                 return new VoidMapper();
             }
 

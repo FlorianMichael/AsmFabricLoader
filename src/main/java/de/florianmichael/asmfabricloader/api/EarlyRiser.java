@@ -41,7 +41,8 @@ public class EarlyRiser {
      */
     public static <T> void invokeEntrypoints(final String name, final Class<T> type, final Consumer<T> consumer) {
         for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
-            if (mod.getMetadata() instanceof LoaderModMetadata modMetadata) {
+            if (mod.getMetadata() instanceof LoaderModMetadata) {
+                final LoaderModMetadata modMetadata = (LoaderModMetadata) mod.getMetadata();
                 final List<EntrypointMetadata> entrypointMetadata = modMetadata.getEntrypoints(name);
                 for (EntrypointMetadata metadata : entrypointMetadata) {
                     final T instance = createInstance(metadata.getValue(), type);

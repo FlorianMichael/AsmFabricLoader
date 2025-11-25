@@ -28,6 +28,7 @@ import net.fabricmc.loader.api.ModContainer;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AsmFabricLoader {
 
@@ -62,7 +63,7 @@ public class AsmFabricLoader {
      * @return All AsmFabricLoader mods
      */
     public List<ModContainer> getAflMods() {
-        return FabricLoader.getInstance().getAllMods().stream().filter(this::isAflMod).toList();
+        return FabricLoader.getInstance().getAllMods().stream().filter(this::isAflMod).collect(Collectors.toList());
     }
 
     /**
