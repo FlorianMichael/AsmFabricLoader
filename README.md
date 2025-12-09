@@ -46,16 +46,16 @@ my [Discord](https://florianmichael.de/discord).
 
 ### Gradle/Maven
 
-To use BaseProject with Gradle/Maven you can
-use [Maven Central](https://mvnrepository.com/artifact/de.florianmichael/AsmFabricLoader), [Lenni0451's Maven](https://maven.lenni0451.net/#/releases/de/florianmichael/AsmFabricLoader)
-or [Jitpack](https://jitpack.io/#FlorianMichael/AsmFabricLoader).  
+To use AsmFabricLoader with Gradle/Maven you can
+use [the Maven Central repository](https://mvnrepository.com/artifact/de.florianmichael/AsmFabricLoader)
+or [my own repository](https://maven.florianmichael.de/#/releases/de/florianmichael/AsmFabricLoader).  
 You can also find instructions how to implement it into your build script there.
 
 ### Jar File
 
-If you just want the latest jar file you can download it from the
-GitHub [Actions](https://github.com/FlorianMichael/AsmFabricLoader/actions) or use
-the [Release](https://github.com/FlorianMichael/AsmFabricLoader/releases).
+If you just want the latest jar file you can download it
+from [my build server](https://build.florianmichael.de/job/AsmFabricLoader), [GitHub Actions](https://github.com/FlorianMichael/AsmFabricLoader/actions)
+or use the [releases tab](https://github.com/FlorianMichael/AsmFabricLoader/releases).
 
 ## How to use
 
