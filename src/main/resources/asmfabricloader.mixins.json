@@ -1,0 +1,5 @@
+{
+  "required": true,
+  "package": "de.florianmichael.asmfabricloader.loader.bootstrap",
+  "plugin": "de.florianmichael.asmfabricloader.loader.bootstrap.AFLMixinPlugin"
+}
