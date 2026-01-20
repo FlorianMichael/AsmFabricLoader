@@ -73,7 +73,6 @@ public class MixinTransformerBootstrap {
      */
 
     public static ClassNode transform(final String mixinClassName, final ClassNode mixin) {
-        System.out.println(mixinClassName);
         final ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         mixin.accept(writer);
 
