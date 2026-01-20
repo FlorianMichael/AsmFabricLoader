@@ -58,7 +58,8 @@ public class EarlyRiser {
         try {
             return type.cast(Class.forName(className).getConstructor().newInstance());
         } catch (Exception e) {
-            AFLConstants.LOGGER.error("Failed to load early entrypoint {}", className, e);
+            AFLConstants.LOGGER.error("Failed to load early entrypoint " + className, e);
+            // Legacy Fabric doesn't support LOGGER.error (String, Object...)
             return null;
         }
     }

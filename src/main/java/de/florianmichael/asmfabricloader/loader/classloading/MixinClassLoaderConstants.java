@@ -64,13 +64,16 @@ public class MixinClassLoaderConstants {
                 }
                 tempFile.toFile().deleteOnExit();
 
-                AFLConstants.LOGGER.info("Loaded AFL mappings for mod {} from {}", modId, sourcePath);
+                AFLConstants.LOGGER.info("Loaded AFL mappings for mod " + modId + " from " + sourcePath);
+                // Legacy Fabric doesn't support LOGGER.error (String, Object...)
                 return new TinyV2Mapper(MapperConfig.create().fillSuperMappings(true).remapTransformer(true), tempFile.toFile(), "named", "intermediary");
             } catch (final IOException e) {
-                AFLConstants.LOGGER.error("I/O error while loading afl mappings for mod {} from {}", modId, sourcePath, e);
+                AFLConstants.LOGGER.error("I/O error while loading afl mappings for mod " + modId + " from " + sourcePath, e);
+                // Legacy Fabric doesn't support LOGGER.error (String, Object...)
                 return new VoidMapper();
             } catch (final Throwable t) {
-                AFLConstants.LOGGER.error("Failed to load afl mappings for mod {} from {}", modId, sourcePath, t);
+                // Legacy Fabric doesn't support LOGGER.error (String, Object...)
+                AFLConstants.LOGGER.error("Failed to load afl mappings for mod " + modId + " from " + sourcePath, t);
                 return new VoidMapper();
             }
         });
@@ -86,7 +89,8 @@ public class MixinClassLoaderConstants {
             final String path = value.getAsString().trim();
             return path.startsWith("/") ? path : "/" + path;
         } catch (final Exception e) {
-            AFLConstants.LOGGER.warn("Invalid custom.asmfabricloader:mappings on mod {}: {}", mod.getMetadata().getId(), e.getMessage());
+            // Legacy Fabric doesn't support LOGGER.warn (String, Object...)
+            AFLConstants.LOGGER.warn("Invalid custom.asmfabricloader:mappings on mod " + mod.getMetadata().getId() + ": " + e.getMessage());
             return DEFAULT_MAPPINGS_PATH;
         }
     }

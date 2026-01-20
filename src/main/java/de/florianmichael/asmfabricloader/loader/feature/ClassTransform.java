@@ -58,7 +58,8 @@ public final class ClassTransform {
             }
         });
         if (AFLConstants.isDebugEnabled()) {
-            AFLConstants.LOGGER.info("Loaded {} transformer config{}", modsToTransformerJsons.size(), modsToTransformerJsons.size() != 1 ? "s" : "");
+            // Legacy Fabric doesn't support LOGGER.info (String, Object...)
+            AFLConstants.LOGGER.info("Loaded " + modsToTransformerJsons.size() + " transformer config" + (modsToTransformerJsons.size() != 1 ? "s" : ""));
         }
 
         for (final Map.Entry<ModContainer, List<ClassTransformJson>> entry : modsToTransformerJsons.entrySet()) {
@@ -88,13 +89,15 @@ public final class ClassTransform {
 
     private void parseTransformer(final ModContainer mod, final String filePath) {
         if (!filePath.endsWith(".json")) {
-            AFLConstants.LOGGER.error("Transformer config file {} from {} is not a json file", filePath, mod.getMetadata().getId());
+            // Legacy Fabric doesn't support LOGGER.error (String, Object...)
+            AFLConstants.LOGGER.error("Transformer config file " + filePath + " from " + mod.getMetadata().getId() + " is not a json file");
             return;
         }
 
         final Optional<Path> file = mod.findPath(filePath);
         if (!file.isPresent()) {
-            AFLConstants.LOGGER.error("Transformer config file {} from {} does not exist", filePath, mod.getMetadata().getId());
+            // Legacy Fabric doesn't support LOGGER.error (String, Object...)
+            AFLConstants.LOGGER.error("Transformer config file " + filePath + " from " + mod.getMetadata().getId() + " does not exist");
             return;
         }
 
@@ -110,7 +113,8 @@ public final class ClassTransform {
             }
             MixinClassLoaderConstants.MIXING_TRANSFORMERS.put(mod, mixinTransformers);
         } catch (IOException e) {
-            AFLConstants.LOGGER.error("Failed to read transformer config file {} from {}", filePath, mod.getMetadata().getId(), e);
+            // Legacy Fabric doesn't support LOGGER.error (String, Object...)
+            AFLConstants.LOGGER.error("Failed to read transformer config file " + filePath + " from " + mod.getMetadata().getId(), e);
         }
     }
 
