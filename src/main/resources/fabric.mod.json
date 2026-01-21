@@ -28,6 +28,9 @@
       "badges": [ "library" ]
     }
   },
+  "mixins": [
+    "asmfabricloader.mixins.json"
+  ],
   "languageAdapters": {
     "afl": "de.florianmichael.asmfabricloader.loader.bootstrap.AFLLanguageAdapter"
   }
