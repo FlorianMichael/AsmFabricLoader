@@ -69,7 +69,6 @@ public class Unmixer {
         mixins.add(AsmUtil.normalizeClassName(path));
 
         if (AFLConstants.isDebugEnabled()) {
-            // Legacy Fabric doesn't support LOGGER.warn (String, Object...)
             AFLConstants.LOGGER.warn("Unloaded mixin class " + AsmUtil.normalizeClassName(path));
         }
     }

@@ -55,7 +55,6 @@ public class JarBooter {
         try {
             replaceJar0(file);
         } catch (MalformedURLException e) {
-            // Legacy Fabric doesn't support LOGGER.error (String, Object...)
             AFLConstants.LOGGER.error("Failed to load jar file " + file.getName() + " to the front of the classpath", e);
         }
     }
@@ -76,7 +75,6 @@ public class JarBooter {
                     ClassLoaders.loadToFront(listFile.toURI().toURL());
 
                     if (AFLConstants.isDebugEnabled()) {
-                        // Legacy Fabric doesn't support LOGGER.info (String, Object...)
                         AFLConstants.LOGGER.info("Loaded jar file " + listFile.getName() + " to the front of the classpath");
                     }
                 } else if (listFile.isDirectory()) {

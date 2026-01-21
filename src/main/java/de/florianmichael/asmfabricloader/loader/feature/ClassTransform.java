@@ -58,7 +58,6 @@ public final class ClassTransform {
             }
         });
         if (AFLConstants.isDebugEnabled()) {
-            // Legacy Fabric doesn't support LOGGER.info (String, Object...)
             AFLConstants.LOGGER.info("Loaded " + modsToTransformerJsons.size() + " transformer config" + (modsToTransformerJsons.size() != 1 ? "s" : ""));
         }
 
@@ -89,14 +88,12 @@ public final class ClassTransform {
 
     private void parseTransformer(final ModContainer mod, final String filePath) {
         if (!filePath.endsWith(".json")) {
-            // Legacy Fabric doesn't support LOGGER.error (String, Object...)
             AFLConstants.LOGGER.error("Transformer config file " + filePath + " from " + mod.getMetadata().getId() + " is not a json file");
             return;
         }
 
         final Optional<Path> file = mod.findPath(filePath);
         if (!file.isPresent()) {
-            // Legacy Fabric doesn't support LOGGER.error (String, Object...)
             AFLConstants.LOGGER.error("Transformer config file " + filePath + " from " + mod.getMetadata().getId() + " does not exist");
             return;
         }
@@ -113,7 +110,6 @@ public final class ClassTransform {
             }
             MixinClassLoaderConstants.MIXING_TRANSFORMERS.put(mod, mixinTransformers);
         } catch (IOException e) {
-            // Legacy Fabric doesn't support LOGGER.error (String, Object...)
             AFLConstants.LOGGER.error("Failed to read transformer config file " + filePath + " from " + mod.getMetadata().getId(), e);
         }
     }
