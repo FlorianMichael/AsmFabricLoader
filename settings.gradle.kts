@@ -6,7 +6,7 @@ pluginManagement {
 	}
 
     plugins {
-        id("fabric-loom") version "1.11-SNAPSHOT"
+        id("fabric-loom") version "1.11-SNAPSHOT" // Keep this in order to support legacy fabric
         id("de.florianmichael.baseproject.BaseProject") version "1.2.8"
     }
 }
