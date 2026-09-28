@@ -1,22 +1,23 @@
 pluginManagement {
-	repositories {
-		mavenCentral()
-		gradlePluginPortal()
-        maven("https://maven.florianreuth.de/releases")
-        maven("https://maven.fabricmc.net/")
-	}
+    includeBuild("build-logic")
 
-    plugins {
-        id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT"
-        id("de.florianreuth.baseproject") version "3.0.2"
+    repositories {
+        gradlePluginPortal()
+        maven("https://maven.fabricmc.net/")
     }
 }
 
 plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+    id("base.settings")
+    id("base.fabric_settings")
+}
+
+dependencyResolutionManagement {
+    repositories {
+        maven("https://maven.lenni0451.net/everything")
+    }
 }
 
 rootProject.name = "asmfabricloader"
 
 include("asmfabricloader-test-mod")
-

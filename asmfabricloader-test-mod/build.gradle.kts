@@ -1,4 +1,9 @@
+plugins {
+    id("base.java")
+    id("base.fabric")
+}
+
 dependencies {
-    implementation("net.lenni0451.classtransform:core:1.15.1")
-    implementation(rootProject)
+    implementation(libs.classtransform.core)
+    implementation(projects.asmfabricloader)
 }

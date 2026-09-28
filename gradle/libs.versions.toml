@@ -1,0 +1,14 @@
+[versions]
+minecraft = "26.2"
+fabric-loader = "0.19.3"
+fabric-loom = "1.17-SNAPSHOT"
+classtransform = "1.15.1"
+
+[libraries]
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
+fabric-loom-plugin = { module = "net.fabricmc.fabric-loom:net.fabricmc.fabric-loom.gradle.plugin", version.ref = "fabric-loom" }
+foojay-resolver-convention-plugin = { module = "org.gradle.toolchains.foojay-resolver-convention:org.gradle.toolchains.foojay-resolver-convention.gradle.plugin", version = "1.0.0" }
+tiny-mappings-parser = { module = "net.fabricmc:tiny-mappings-parser", version = "0.3.0+build.17" }
+reflect = { module = "net.lenni0451:Reflect", version = "1.6.4" }
+classtransform-core = { module = "net.lenni0451.classtransform:core", version.ref = "classtransform" }
